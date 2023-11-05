@@ -18,6 +18,8 @@ export interface IFourStarHotel{
     discount : Array<Object>,
     rating  : number,
     numberOfRatings : number
+    isSeaFacing : boolean,
+    isHillFacing : boolean
     createdAt : Date,
     updatedAt : Date,
     deletedAt : Date
@@ -75,6 +77,14 @@ const schemaFields: Record<keyof Omit<IFourStarHotel, '_id'>, any> = {
     numberOfRatings : {
       type : Number,
       default : 0
+    },
+    isSeaFacing : {
+      type : Boolean,
+      required : true,
+    },
+    isHillFacing : {
+      type : Boolean,
+      required : true
     },
     createdAt: {
       type: Date,

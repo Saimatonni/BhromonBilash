@@ -30,6 +30,8 @@ export interface IThreeStarHotel{
     doubleBedPrice : number,
     seaFacingExtraPrice : number,
     hillFacingExtraPrice : number,
+    isSeaFacing : boolean,
+    isHillFacing : boolean
     distance : number,
     discount : Array<IDiscount>,
     rating  : number,
@@ -83,6 +85,14 @@ const schemaFields: Record<keyof Omit<IThreeStarHotel, '_id'>, any> = {
     discount : {
       type : Array<Object>,
       default : []
+    },
+    isSeaFacing : {
+      type : Boolean,
+      required : true,
+    },
+    isHillFacing : {
+      type : Boolean,
+      required : true
     },
     rating : {
       type : Number,
