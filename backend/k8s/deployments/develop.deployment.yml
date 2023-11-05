@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zsp-backend-deploy
+  namespace: develop
+  labels:
+    app: zsp-backend
+    namespace: develop
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zsp-backend
+      namespace: develop
+  template:
+    metadata:
+      labels:
+        app: zsp-backend
+        namespace: develop
+    spec:
+      volumes:
+        - name: shared-dir
+          emptyDir: {}
+      containers:
+        - image: APP_IMAGE
+          name: zsp-backend-nextjs
+          resources:
+            requests:
+              cpu: '300m'
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: shared-dir
+              mountPath: /app/assets/pdf
+          envFrom:
+            - configMapRef:
+                name: zsp-backend-configmap
+            - secretRef:
+                name: zoopsign-secrets

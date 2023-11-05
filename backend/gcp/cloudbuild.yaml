@@ -1,0 +1,97 @@
+# To containerize you app this step helps you to build on GCP
+# This is a yaml file, like all others, to build and store you
+# containerize application to Google Container Registry
+# Change the PROJECT_NAME to the name of your project
+steps:
+  - id: "Pull the Previous Image"
+    name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
+    args:
+      [
+        "-c",
+        "docker pull asia.gcr.io/$PROJECT_ID/zsp-backend:$BRANCH_NAME || exit 0",
+      ]
+
+  - id: "Build Zoopsign NodeJS Backend"
+    name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "--build-arg",
+        "SSH_KEY=$_SSH_KEY",
+        "--build-arg",
+        "GCP_SA_JSON=$_GCP_SA_JSON",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/zsp-backend:$SHORT_SHA",
+        "-t",
+        "asia.gcr.io/$PROJECT_ID/zsp-backend:$BRANCH_NAME",
+        "--cache-from",
+        "asia.gcr.io/$PROJECT_ID/zsp-backend:$BRANCH_NAME",
+        "-f",
+        "Dockerfile.old",
+        ".",
+      ]
+  - id: "Push Zoopsign NodeJS Backend"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["push", "asia.gcr.io/$PROJECT_ID/zsp-backend:$SHORT_SHA"]
+
+  # The short sha is already there but we are tagging this image with branch name
+  # so that we can use it to cache from
+  - id: "Tag Image Based on Branch"
+    name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "beta",
+        "container",
+        "images",
+        "add-tag",
+        "asia.gcr.io/$PROJECT_ID/zsp-backend:$SHORT_SHA",
+        "asia.gcr.io/$PROJECT_ID/zsp-backend:$BRANCH_NAME",
+      ]
+  
+  # Deploy
+  - id: "Replace APP Image"
+    name: "ubuntu"
+    args:
+      [
+        "bash",
+        "-c",
+        'sed -i "s, APP_IMAGE, asia.gcr.io/$PROJECT_ID/zsp-backend:$SHORT_SHA," k8s/deployments/$_ENV.deployment.yml',
+      ]
+
+  - id: "Apply Configmap"
+    name: "gcr.io/cloud-builders/kubectl"
+    args:
+      ["apply", "-f", "k8s/config/$_ENV.env-configmap.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Deployment"
+    name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "apply",
+        "-f",
+        "k8s/deployments/$_ENV.deployment.yml",
+        "--namespace=$_ENV",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Service"
+    name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "k8s/service/$_ENV.service.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Horizontal Pod Scaler"
+    name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "k8s/hpa/$_ENV.hpa.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+timeout: 1800s

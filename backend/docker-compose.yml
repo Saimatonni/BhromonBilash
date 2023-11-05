@@ -1,0 +1,48 @@
+version: "3"
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo-quiz
+    networks:
+      - amicsoft-bakend-tier
+    restart: unless-stopped
+    ports:
+      - "27016:27017"
+    volumes:
+      - amicsoft-mongo-vol:/data/db
+  redis:
+    image: library/redis:5.0-alpine
+    container_name: redis-quiz
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    networks:
+      - amicsoft-bakend-tier
+    volumes:
+      - amicsoft-redis:/data
+
+  amicsoft-backend:
+    container_name: amicsoft-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env
+    working_dir: "/app"
+    volumes:
+      - ./assets/pdf:/app/assets/pdf
+    networks:
+      - amicsoft-bakend-tier
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+      - redis
+
+volumes:
+  amicsoft-shared-vol:
+  amicsoft-mongo-vol:
+  amicsoft-redis:
+
+networks:
+  amicsoft-bakend-tier:

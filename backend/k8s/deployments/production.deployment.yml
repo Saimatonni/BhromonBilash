@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zsp-backend-deploy
+  namespace: production
+  labels:
+    app: zsp-backend
+    namespace: production
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zsp-backend
+      namespace: production
+  template:
+    metadata:
+      labels:
+        app: zsp-backend
+        namespace: production
+    spec:
+      volumes:
+        - name: shared-dir
+          emptyDir: {}
+      containers:
+        - image: APP_IMAGE
+          name: zsp-backend-nextjs
+          resources:
+            requests:
+              cpu: '300m'
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: shared-dir
+              mountPath: /app/assets/pdf
+          envFrom:
+            - configMapRef:
+                name: zsp-backend-configmap
+            - secretRef:
+                name: zoopsign-secrets

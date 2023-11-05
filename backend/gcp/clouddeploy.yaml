@@ -1,0 +1,43 @@
+steps:
+  - id: "Replace APP Image"
+    name: "ubuntu"
+    args:
+      [
+        "bash",
+        "-c",
+        'sed -i "s, APP_IMAGE, asia.gcr.io/$PROJECT_ID/zsp-backend:$SHORT_SHA," k8s/deployments/$_ENV.deployment.yml',
+      ]
+
+  - id: "Apply Configmap"
+    name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "apply",
+        "-f",
+        "k8s/config/$_ENV.env-configmap.yml",
+        "--namespace=$_ENV",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Deployment"
+    name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "k8s/deployments/$_ENV.deployment.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Service"
+    name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "k8s/service/$_ENV.service.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"
+
+  - id: "Apply Horizontal Pod Scaler"
+    name: "gcr.io/cloud-builders/kubectl"
+    args: ["apply", "-f", "k8s/hpa/$_ENV.hpa.yml", "--namespace=$_ENV"]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}"
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}"

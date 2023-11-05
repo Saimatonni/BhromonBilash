@@ -1,0 +1,25 @@
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: zsp-backendconfig
+  namespace: production
+spec:
+  healthCheck:
+    requestPath: /api/health
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zsp-backend-service
+  namespace: production
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"3000":"zsp-backendconfig"}}'
+spec:
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: zsp-backend
+    namespace: production
+  type: NodePort

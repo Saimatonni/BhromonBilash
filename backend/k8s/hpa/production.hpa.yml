@@ -1,0 +1,13 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: zsp-backend
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: zsp-backend-deploy
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 80
