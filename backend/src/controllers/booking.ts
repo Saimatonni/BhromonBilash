@@ -12,9 +12,11 @@ export const convertToDate = (dateAsString : string) : Date => {
     return new Date(year, month - 1, day + 1);
 } 
 
-export const makeBooking : RequestHandler =async (req,res,next) => {
+export const makeBooking : RequestHandler =async (req : any,res,next) => {
     try{
         const budgetType : string = req.query.budgetType as string
+        const userId = req.user._id
+
         const booking = req.body
         if(budgetType!==booking.budgetType){
             throw new APIError({
@@ -22,10 +24,12 @@ export const makeBooking : RequestHandler =async (req,res,next) => {
                 message : "Query param and budget type in body does not match !!!"
             })
         }
+
         booking.uptrip.date = convertToDate(booking.uptrip.date)
         booking.downtrip.date = convertToDate(booking.downtrip.date)
         booking.bookingDates.start = convertToDate(booking.bookingDates.start)
         booking.bookingDates.end = convertToDate(booking.bookingDates.end)
+        booking.userId = userId
 
         const command : ICommand = new FactoryMethod().bookingFactoryMethod(budgetType,booking)
         const invoker = new Invoker(command)

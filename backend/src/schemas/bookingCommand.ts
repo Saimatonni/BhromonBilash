@@ -41,28 +41,30 @@ export abstract class BookingCommand implements ICommand {
         message: "Opps... some error in tour id",
       });
     }
-    this.booking.tourName = tour.name;
-    this.booking.tourImages = tour.images;
+    this.booking.tourName = tour[0].name;
+    this.booking.tourImages = tour[0].images;
 
     const { uptripPrice, downtripPrice } = await this.getTripPrice();
     this.booking.uptrip.totalPrice = uptripPrice;
     this.booking.downtrip.totalPrice = downtripPrice;
 
-    const hotelCharge = await this.getRoomPrice();
+    const {hotelCharge,hotelName} = await this.getRoomPriceAndHotelName();
+    this.booking.hotelName = hotelName
     this.booking.hotelCharge = hotelCharge;
     this.booking.totalPrice = hotelCharge + uptripPrice + downtripPrice;
 
     if (this.booking.tourGuide) {
       this.booking.totalPrice +=
-        tour.tourGuidePrice *
         this.getTourGuidePrice(
           this.booking.bookingDates.start,
-          this.booking.bookingDates.end
+          this.booking.bookingDates.end,
+          tour[0].tourGuidePrice
         );
     }
 
+
     await this.updateRoomBookings();
-    console.log("Room updatation done");
+    console.log("Room update done")
 
     return await this.confirmBooking();
   }
@@ -72,12 +74,12 @@ export abstract class BookingCommand implements ICommand {
   }
 
   abstract getTripPrice();
-  abstract getRoomPrice();
+  abstract getRoomPriceAndHotelName();
   abstract updateRoomBookings();
   abstract confirmBooking();
 
-  getTourGuidePrice(start: Date, end: Date): number {
-    return calculateNumberOfDays(start, end);
+  getTourGuidePrice(start: Date, end: Date,tourGuidePrice : number): number {
+    return calculateNumberOfDays(start, end)*tourGuidePrice;
   }
 }
 
@@ -108,7 +110,7 @@ export class BookingCommandThreeStarRooms extends BookingCommand {
     return { uptripPrice, downtripPrice };
   }
 
-  async getRoomPrice() {
+  async getRoomPriceAndHotelName() {
     const result: any = await fetchThreeStarHotelsByIdWithRooms(
       this.booking.hotelId as any,
       this.booking.singleBedRoomIds as any,
@@ -121,7 +123,8 @@ export class BookingCommandThreeStarRooms extends BookingCommand {
       singleBedRoomPrice,
       doubleBedRoomPrice
     );
-    return hotelCharge;
+    const hotelName = result[0].name
+    return {hotelCharge,hotelName};
   }
 
   async updateRoomBookings() {
@@ -164,7 +167,7 @@ export class BookingCommandFourStarRooms extends BookingCommand {
     return { uptripPrice, downtripPrice };
   }
 
-  async getRoomPrice() {
+  async getRoomPriceAndHotelName() {
     const result: any = await fetchFourStarHotelsByIdWithRooms(
       this.booking.hotelId as any,
       this.booking.singleBedRoomIds as any,
@@ -173,12 +176,14 @@ export class BookingCommandFourStarRooms extends BookingCommand {
 
     const singleBedRoomPrice = this.hotel.getSingleBedRoomPrice(result[0]);
     const doubleBedRoomPrice = this.hotel.getDoubleBedRoomPrice(result[0]);
+    this.booking.hotelName = result[0].name
     const hotelCharge = this.hotel.processDiscounts(
       result[0],
       singleBedRoomPrice,
       doubleBedRoomPrice
     );
-    return hotelCharge;
+    const hotelName = result[0].name
+    return {hotelCharge,hotelName};
   }
 
   async updateRoomBookings() {
@@ -221,7 +226,7 @@ export class BookingCommandFiveStarRooms extends BookingCommand {
     return { uptripPrice, downtripPrice };
   }
 
-  async getRoomPrice() {
+  async getRoomPriceAndHotelName() {
     const result: any = await fetchFiveStarHotelsByIdWithRooms(
       this.booking.hotelId as any,
       this.booking.singleBedRoomIds as any,
@@ -229,12 +234,15 @@ export class BookingCommandFiveStarRooms extends BookingCommand {
     );
     const singleBedRoomPrice = this.hotel.getSingleBedRoomPrice(result[0]);
     const doubleBedRoomPrice = this.hotel.getDoubleBedRoomPrice(result[0]);
+    this.booking.hotelName = result[0].name
     const hotelCharge = this.hotel.processDiscounts(
       result[0],
       singleBedRoomPrice,
       doubleBedRoomPrice
     );
-    return hotelCharge;
+    
+    const hotelName = result[0].name
+    return {hotelCharge,hotelName};
   }
 
   async updateRoomBookings() {

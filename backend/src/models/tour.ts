@@ -7,6 +7,8 @@ export interface ITour{
     tourGuidePrice : number
     rating : number,
     numberOfRatings : number
+    featured : boolean,
+    location : string
     createdAt : Date
     updatedAt : Date
     deletedAt : Date
@@ -19,7 +21,7 @@ const schemaFields: Record<keyof Omit<ITour, '_id'>, any> = {
       unique : true
     },
     images: {
-      type: Array<String>,
+      type: [String],
       default: []
     },
     description: {
@@ -37,6 +39,14 @@ const schemaFields: Record<keyof Omit<ITour, '_id'>, any> = {
     numberOfRatings : {
       type : Number,
       default : 0
+    },
+    featured : {
+      type : Boolean,
+      default : false
+    },
+    location : {
+      type : String,
+      required : true
     },
     createdAt: {
       type: Date,
