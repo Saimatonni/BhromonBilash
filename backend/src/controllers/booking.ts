@@ -1,9 +1,8 @@
 import { RequestHandler } from "express";
 import { getSuccessResponse } from "../utils/helper";
 import {  CancelBookingCommand, GetBookingsCommand, ICommand, Invoker } from "../schemas/command";
-import { FactoryMethod } from "../schemas/factoryMethod";
 import APIError from "../utils/APIError";
-import { deleteBooking } from "../crud/booking";
+import { Booking } from "../schemas/booking";
 
 export const convertToDate = (dateAsString : string) : Date => {
     const [day, month, year] = dateAsString
@@ -31,7 +30,7 @@ export const makeBooking : RequestHandler =async (req : any,res,next) => {
         booking.bookingDates.end = convertToDate(booking.bookingDates.end)
         booking.userId = userId
 
-        const command : ICommand = new FactoryMethod().bookingFactoryMethod(budgetType,booking)
+        const command : ICommand = new Booking(booking).createBookingCommand()
         const invoker = new Invoker(command)
         const result = await invoker.execute()
         return res.status(200).send(getSuccessResponse("A booking has been done. Please check the booking part of your profile to confirm.",result))

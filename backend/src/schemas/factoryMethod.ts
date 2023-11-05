@@ -45,14 +45,14 @@ export class FactoryMethod{
         }
     }
 
-    bookingFactoryMethod = (budgetType : string,booking : IBooking)=>{
-        if(budgetType===EBudgetType.LOW){
+    bookingFactoryMethod = (booking : IBooking)=>{
+        if(booking.budgetType===EBudgetType.LOW){
             return new BookingCommandThreeStarRooms(booking)
         }
-        else if(budgetType===EBudgetType.MID){
+        else if(booking.budgetType===EBudgetType.MID){
             return new BookingCommandFourStarRooms(booking)
         }
-        else if(budgetType===EBudgetType.HIGH){
+        else if(booking.budgetType===EBudgetType.HIGH){
             return new BookingCommandFiveStarRooms(booking)
         }
         else{
