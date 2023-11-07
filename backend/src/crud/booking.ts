@@ -257,7 +257,7 @@ export const deleteBooking = async (bookingId: string) => {
     if (!deletedBooking) {
       throw new APIError({
         status: 400,
-        message: "Booking does not exist",
+        message: "Booking id does not exist or your deadline for booking cancelation has passed.",
       });
     }
 
@@ -374,11 +374,7 @@ export const deleteBooking = async (bookingId: string) => {
     return deletedBooking;
   } catch (error) {
     await session.abortTransaction();
-    throw new APIError({
-      status: 400,
-      message:
-        "Opps... error occured while cancelation. Please try again.",
-    });
+    throw new APIError(error);
   } finally {
     await session.endSession();
   }

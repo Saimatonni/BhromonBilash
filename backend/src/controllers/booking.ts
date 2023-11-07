@@ -40,9 +40,9 @@ export const makeBooking : RequestHandler =async (req : any,res,next) => {
     }
 } 
 
-export const getBookings : RequestHandler =async (req,res,next) => {
+export const getBookings : RequestHandler =async (req : any,res,next) => {
     try{
-        const userId = req.query.userId
+        const userId = req.user._id
         const command : ICommand = new GetBookingsCommand(userId as string)
         const invoker = new Invoker(command) 
         const result = await invoker.execute()
@@ -54,10 +54,15 @@ export const getBookings : RequestHandler =async (req,res,next) => {
 }
 
 export const cancelBooking : RequestHandler = async (req,res,next) => {
-    const {bookingId} = req.body
-    const command : ICommand = new CancelBookingCommand(bookingId)
-    const invoker = new Invoker(command)
-    const deletedBooking = await invoker.execute()
-    return res.status(200).send(getSuccessResponse("Booking deleted successfully",deletedBooking))
+    try{
+        const {bookingId} = req.body
+        const command : ICommand = new CancelBookingCommand(bookingId)
+        const invoker = new Invoker(command)
+        const deletedBooking = await invoker.execute()
+        return res.status(200).send(getSuccessResponse("Booking deleted successfully",deletedBooking))    
+    }
+    catch(error){
+        next(error)
+    }
 
 }

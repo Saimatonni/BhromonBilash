@@ -9,6 +9,7 @@ import bookingRouter from "./booking"
 import authenticationRouter from "./authentication"
 import ratingRouter from "./rating"
 import subscriptionRouter from './subscription'
+import profileRouter from './profile'
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use('/booking',bookingRouter)
 router.use('/auth',authenticationRouter)
 router.use('/rating',ratingRouter)
 router.use('/subscription',subscriptionRouter)
+router.use('/profile',profileRouter)
 
 
 export default router;

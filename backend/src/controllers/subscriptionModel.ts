@@ -3,13 +3,13 @@ import { ISubscriber, NotificationSystem, SubscriberClient } from "../schemas/su
 import { getSuccessResponse } from "../utils/helper";
 import { INotificationObject } from "../models/user";
 
-export const requestForSubscription : RequestHandler =async (req,res,next) => {
+export const requestForSubscription : RequestHandler =async (req: any,res,next) => {
     try{
-        const userId = req.query.userId
+        const userId = req.user._id
         const notificationSystem = new NotificationSystem()
         const subscriber : ISubscriber = new SubscriberClient(userId as string,notificationSystem)
         const result = subscriber.requestForSubscription()
-        return res.status(200).send(getSuccessResponse("Your have been subscribed subccesfully",result))
+        return res.status(200).send(getSuccessResponse("You have subscribed succesfully",result))
     }
     catch(error)
     {
@@ -17,13 +17,13 @@ export const requestForSubscription : RequestHandler =async (req,res,next) => {
     }
 }
 
-export const requestForSubscriptionRemoval : RequestHandler =async (req,res,next) => {
+export const requestForSubscriptionRemoval : RequestHandler =async (req : any,res,next) => {
     try{
-        const userId = req.query.userId
+        const userId = req.user._id
         const notificationSystem = new NotificationSystem()
         const subscriber : ISubscriber = new SubscriberClient(userId as string,notificationSystem)
         const result = subscriber.requestForSubscriptionRemoval()
-        return res.status(200).send(getSuccessResponse("Your subscrition has been removed subccesfully",result))
+        return res.status(200).send(getSuccessResponse("Your subscrition has been removed succesfully",result))
     }
     catch(error)
     {
@@ -31,6 +31,8 @@ export const requestForSubscriptionRemoval : RequestHandler =async (req,res,next
     }
 }
 
+
+//admin side method
 export const pushNotifications : RequestHandler =async (req,res,next) => {
     try{
         const {message, messageType} = req.body
