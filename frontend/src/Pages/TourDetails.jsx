@@ -1,4 +1,4 @@
-import React, {useRef,useState} from 'react'
+import React, {useRef,useState, useEffect} from 'react'
 import '../styles/tour-details.css'
 import { Container, Row, Col, Form, ListGroup } from 'reactstrap'
 import { useParams } from 'react-router-dom'
@@ -7,13 +7,33 @@ import calculateAvgRating from '../utils/avgRating';
 import avatar from  '../assets/images/avatar.jpg';
 import Booking from '../components/Booking/Booking'
 import Newsletter from '../shared/Newsletter'
+import { useTour } from '../context/tourDetailsContext'
+import axios from 'axios';
 
 const TourDetails = () => {
   const { id } = useParams();
+  const [tourDetails, setTourDetails] = useState(null);
+  // const {tourDetails, fetchTourDetails } = useTour();
+  // useEffect(() => {
+  //   fetchTourDetails(id); 
+  // }, [id]);
+  useEffect(() => {
+    axios.get(`http://localhost:3000/api/tour?tourId=${id}`)
+      .then((response) => {
+        const fetchedTour = response.data; 
+        setTourDetails(fetchedTour);
+      })
+      .catch((error) => {
+        console.error('Error fetching tour details:', error);
+      });
+  }, [id]);
+
+  console.log("details",tourDetails)
+
   const reviewMsgReg = useRef('')
   const [tourRating, setTourRating] = useState(null)
 
-  const tour = tourData.find(tour => tour.id == id)
+  const tour = tourData.find(tour => tour._id == id)
   const { photo, title, desc, price,adress, reviews, city, distance, maxGroupSize } = tour;
   const {totalRating, avgRating} = calculateAvgRating(reviews)
   const options ={day:'numeric', month:'long', year:'numeric'}
