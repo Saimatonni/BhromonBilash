@@ -37,7 +37,7 @@ export class SubscriberClient implements ISubscriber{
 export interface INotificationSubject {
     registerSubscriber(subscriber : ISubscriber);
     removeSubscriber(subscriber : ISubscriber);
-    notifySubscribers(notificationObject);
+    notifySubscribers(notificationObject :  INotificationObject);
     setSubscriber(subscriber : ISubscriber | Array<ISubscriber>)
 }
 

@@ -100,3 +100,13 @@ export const validateMakeBooking = {
     }),
   }),
 };
+
+export const validateCancelBooking = {
+  body: Joi.object({
+    bookingId: Joi.string()
+      .required()
+      .trim()
+      .regex(patterns.ID)
+      .messages(errorMessage("BookingId in body")),
+  }),
+};

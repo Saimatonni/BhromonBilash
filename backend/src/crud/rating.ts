@@ -71,7 +71,7 @@ export const createTourRating = async (tourRating: ITourRating) => {
     }
 
     await session.commitTransaction();
-    return { update1, update2 };
+    return ;
   } catch (error) {
     await session.abortTransaction();
     throw new APIError(error);
@@ -115,10 +115,9 @@ export const createThreeStarHotelRating = async (hotelRating: IHotelRating) => {
     }
 
     await session.commitTransaction();
-    return { update1, update2 };
+    return ;
   } catch (error) {
     await session.abortTransaction();
-    console.log(error);
     throw new APIError({
       status: 400,
       message: "Opps...Some error occured in publishing rating...",
@@ -161,7 +160,7 @@ export const createFourStarHotelRating = async (hotelRating: IHotelRating) => {
     }
 
     await session.commitTransaction();
-    return { update1, update2 };
+    return ;
   } catch (error) {
     await session.abortTransaction();
     throw new APIError({
@@ -206,7 +205,7 @@ export const createFiveStarHotelRating = async (hotelRating: IHotelRating) => {
     }
 
     await session.commitTransaction();
-    return { update1, update2 };
+    return ;
   } catch (error) {
     await session.abortTransaction();
     throw new APIError({
