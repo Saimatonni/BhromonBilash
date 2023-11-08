@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
 
 const TourDetailsContext = createContext();
 
@@ -8,6 +9,7 @@ export function useTour() {
 
 export function TourDetailsProvider({ children }) {
   const [tourDetails, setTourDetails] = useState(null);
+  const [tourId, setTourId] = useState(null);
 
   async function fetchTourDetails(tourId) {
     // const tourId = "653804edb4879bd41bbbbc13"; 
@@ -37,7 +39,7 @@ export function TourDetailsProvider({ children }) {
 //   }, []);
 
   return (
-    <TourDetailsContext.Provider value={{ tourDetails, fetchTourDetails }}>
+    <TourDetailsContext.Provider value={{ tourDetails, fetchTourDetails, tourId, setTourId }}>
       {children}
     </TourDetailsContext.Provider>
   );

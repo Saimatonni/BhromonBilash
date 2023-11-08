@@ -2,6 +2,7 @@
     width: 100%;
     border-radius: 0.5rem;
     margin-bottom: 2.5rem;
+    align-items: center;
 }
 
 .tour__info 
@@ -121,3 +122,67 @@
 .review__item span {
     font-weight: 500;
 }
+
+.image-slider {
+    margin-bottom: 40px; 
+  }
+
+
+
+.tour__budget-details {
+    /* background-color: #f8f8f8;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px; */
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  
+  .budget-card {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    height: 250px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .budget-card h6 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .budget-card p {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 10px;
+  }
+
+  .budget-filter {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    width: 500px;
+  }
+  
+  .budget-filter label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .budget-filter select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    width: 100%;
+    max-width: 200px;
+  }
+  
