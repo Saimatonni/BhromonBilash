@@ -1,44 +1,141 @@
 .hotel-card {
-    margin-top: 30px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    
-  }
-  
-  .hotel-image {
-    max-width: 100%;
-    height: 300px;
-    margin-top: 30px;
-  }
-  
-  .hotel-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 10px 0;
-  }
-  
-  .hotel-description {
-    font-size: 16px;
-  }
-  
-  .hotel-details {
-    font-size: 14px;
-    margin: 10px 0;
-  }
-  
-  .book-button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .no-hotels-message {
-    font-size: 18px;
-    text-align: center;
-  }
+  margin-top: 60px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.hotel-card:hover {
+  transform: scale(1.02);
+}
+
+.hotel-image {
+  max-width: 100%;
+  height: 300px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  object-fit: cover;
+}
+
+.hotel-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 10px 0;
+  color: #333;
+}
+
+.hotel-description {
+  font-size: 16px;
+  color: #555;
+}
+
+.hotel-details {
+  font-size: 14px;
+  margin: 10px 0;
+  color: #777;
+}
+
+.book-button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: right;
+}
+
+.no-hotels-message {
+  font-size: 18px;
+  text-align: center;
+  color: #555;
+}
+
+.sea-facing-details {
+  color: #007bff;
+}
+
+.hill-facing-details {
+  color: #4caf50;
+}
+
+.card-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-body-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(238, 241, 244, 1);
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.card-image-container:hover .card-body-info {
+  opacity: 1;
+  visibility: visible;
+}
+
+.discount-badge {
+  background-color: #ddff00;
+  color: #090909; 
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  margin-right: 10px;
+}
+.selected .card-image-container {
+  border: 4px solid #00ff99;
+  box-shadow: 0 0 10px rgba(249, 245, 245, 0.9);
+}
+
+.travel-section {
+  padding-top: 4rem;
+}
+
+
+
+.travel-card {
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  transition: box-shadow 0.3s;
+}
+
+.travel-card:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.travel-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.travel-details {
+  font-size: 14px;
+  color: #555;
+}
+
+
+.travel-details select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+
+
+
   

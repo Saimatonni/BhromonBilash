@@ -81,11 +81,12 @@ const TourDetailsPage = () => {
       ...prevBookingInfo,
       id: id,
       budgetType: selectedBudgetType,
+      tourGuidePrice: tourGuidePrice,
     }));
-  }, [id, selectedBudgetType]);
+  }, [id, selectedBudgetType, tourGuidePrice]);
 
   const searchHandler = () => {
-    navigate(`/tours/${id}/${selectedBudgetType}`);
+    navigate(`/hotels/${id}/${selectedBudgetType}`);
   };
   return (
     <>
