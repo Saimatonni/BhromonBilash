@@ -20,7 +20,7 @@ import { createBooking } from "../crud/booking";
 import { Hotel } from "./hotel";
 import { fetchTour } from "../crud/tour";
 
-function calculateNumberOfDays(start: Date, end: Date): number {
+export function calculateNumberOfDays(start: Date, end: Date): number {
   return (end.getTime() - start.getTime()) / (1000 * 3600 * 24) + 1;
 }
 
@@ -116,8 +116,8 @@ export class BookingCommandThreeStarRooms extends BookingCommand {
       this.booking.singleBedRoomIds as any,
       this.booking.doubleBedRoomIds as any
     );
-    const singleBedRoomPrice = this.hotel.getSingleBedRoomPrice(result[0]);
-    const doubleBedRoomPrice = this.hotel.getDoubleBedRoomPrice(result[0]);
+    const singleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getSingleBedRoomPrice(result[0]);
+    const doubleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getDoubleBedRoomPrice(result[0]);
     const hotelCharge = this.hotel.processDiscounts(
       result[0],
       singleBedRoomPrice,
@@ -173,9 +173,8 @@ export class BookingCommandFourStarRooms extends BookingCommand {
       this.booking.singleBedRoomIds as any,
       this.booking.doubleBedRoomIds as any
     );
-
-    const singleBedRoomPrice = this.hotel.getSingleBedRoomPrice(result[0]);
-    const doubleBedRoomPrice = this.hotel.getDoubleBedRoomPrice(result[0]);
+    const singleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getSingleBedRoomPrice(result[0]);
+    const doubleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getDoubleBedRoomPrice(result[0]);
     this.booking.hotelName = result[0].name
     const hotelCharge = this.hotel.processDiscounts(
       result[0],
@@ -232,8 +231,8 @@ export class BookingCommandFiveStarRooms extends BookingCommand {
       this.booking.singleBedRoomIds as any,
       this.booking.doubleBedRoomIds as any
     );
-    const singleBedRoomPrice = this.hotel.getSingleBedRoomPrice(result[0]);
-    const doubleBedRoomPrice = this.hotel.getDoubleBedRoomPrice(result[0]);
+    const singleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getSingleBedRoomPrice(result[0]);
+    const doubleBedRoomPrice = calculateNumberOfDays(this.booking.bookingDates.start,this.booking.bookingDates.end) *this.hotel.getDoubleBedRoomPrice(result[0]);
     this.booking.hotelName = result[0].name
     const hotelCharge = this.hotel.processDiscounts(
       result[0],

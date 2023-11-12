@@ -28,6 +28,14 @@ export const makeBooking : RequestHandler =async (req : any,res,next) => {
         booking.downtrip.date = convertToDate(booking.downtrip.date)
         booking.bookingDates.start = convertToDate(booking.bookingDates.start)
         booking.bookingDates.end = convertToDate(booking.bookingDates.end)
+        if(booking.uptrip.date<=booking.bookingDates.start<=booking.bookingDates.end<=booking.downtrip.date){
+        }
+        else{
+            throw new APIError({
+                status : 400,
+                message : "Please select correct dates..."
+            })
+        }
         booking.userId = userId
 
         const command : ICommand = new Booking(booking).createBookingCommand()
