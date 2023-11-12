@@ -12,7 +12,8 @@ export const login : RequestHandler =async (req,res,next) => {
         return res.header("accessToken",result.jwtAccessToken).status(200).send(getSuccessResponse("User logged in successfully",{
             image : result.user.image,
             name : result.user.name,
-            subscribed : result.user.subscribed
+            subscribed : result.user.subscribed,
+            jwtAccessToken : result.jwtAccessToken
         }))
     }
     catch(error){
@@ -42,7 +43,8 @@ export const emailVerification : RequestHandler = async (req,res,next) => {
         return res.header("accessToken",result.jwtAccessToken).send(getSuccessResponse("Email verified successfully",{
             image : result.user.image,
             name : result.user.name,
-            subscribed : result.user.subscribed
+            subscribed : result.user.subscribed,
+            jwtAccessToken : result.jwtAccessToken
         }))
     }
     catch(error){
