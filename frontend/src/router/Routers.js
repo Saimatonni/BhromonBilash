@@ -10,6 +10,8 @@ import ThankYou from '../Pages/ThankYou'
 import TourDetailsPage from '../Pages/TourDetailsPage'
 import BudgetTourDetails from '../Pages/BudgetTourDetails'
 import RoomDetails from '../Pages/RoomDetails'
+import UserProfile from '../Pages/UserProfile'
+
 
 const Routers = () => {
   return (
@@ -17,6 +19,7 @@ const Routers = () => {
        <Route path ='/' element={<Navigate to = '/home' />}/>
        <Route path='/home' element={<Home/>}/>
        <Route path='/tours' element={<Tours/>}/>
+       <Route path='/profile' element={<UserProfile/>}/>
        {/* <Route path='/tours/:id' element={<TourDetails/>}/> */}
        <Route path='/tours/:id' element={<TourDetailsPage/>}/>
        <Route path="/hotels/:id/:budgetType" element={<BudgetTourDetails />} />

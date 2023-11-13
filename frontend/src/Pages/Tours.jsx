@@ -13,18 +13,34 @@ const Tours = () => {
   const { data: tourData, loading, error } = useFetch(`${BASE_URL}/tour/all`);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
+  const [searchName, setSearchName] = useState("");
   useEffect(() => {
     const pages = Math.ceil(5 / 4);
     setPageCount(pages);
     window.scroll(0,0)
   }, [page, tourData]);
+  
+
+  const filteredTours = searchName
+  ? (tourData || []).filter((tour) =>
+      tour.name.toLowerCase().includes(searchName.toLowerCase())
+    )
+  : tourData|| [];
+
+  // console.log("filter tours searchlocation",filteredTours,searchName)
+
+const handleSearch = (name) => {
+  setSearchName(name);
+  setPage(0);
+};
   return (
     <>
       <CommonSection title={"All Tours"} />
       <section>
         <Container>
           <Row>
-            <SearchBar />
+            {/* <SearchBar /> */}
+            <SearchBar onSearch={handleSearch} />
           </Row>
         </Container>
       </section>
@@ -38,13 +54,16 @@ const Tours = () => {
             } */}
             {loading && <h4>Loading......</h4>}
             {error && <h4>{error}</h4>}
-            {!loading &&
-              !error &&
-              tourData?.map((tour) => (
-                <Col lg="3" className="mb-4" key={tour._id}>
-                  <TourCard tour={tour} />
-                </Col>
-              ))}
+            {filteredTours.length === 0 && searchName && (
+                  <Col lg="12" className="text-center mb-4">
+                    <p>No tours available in this location.</p>
+                  </Col>
+                )}
+                {filteredTours.map((tour) => (
+                  <Col lg="3" className="mb-4" key={tour._id}>
+                    <TourCard tour={tour} />
+                  </Col>
+                ))}
             <Col lg="12">
               <div
                 className="pagination d-flex align-items-center

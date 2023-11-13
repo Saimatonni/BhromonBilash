@@ -29,7 +29,7 @@ const TourDetailsPage = () => {
   useEffect(() => {
     const pages = Math.ceil(5 / 4);
     setPageCount(pages);
-    window.scroll(0,0)
+    window.scroll(0, 0);
   }, [page]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -88,6 +88,12 @@ const TourDetailsPage = () => {
   const searchHandler = () => {
     navigate(`/hotels/${id}/${selectedBudgetType}`);
   };
+
+  const handleBudgetCardClick = (budgetType) => {
+    setSelectedBudgetType(budgetType);
+    navigate(`/hotels/${id}/${budgetType}`);
+  };
+
   return (
     <>
       <section>
@@ -143,6 +149,7 @@ const TourDetailsPage = () => {
                       <i class="ri-map-pin-line"></i> {city}
                     </span> */}
                       <span>
+                        Tour Guide :
                         <i class="ri-money-dollar-box-line"></i> $
                         {tourGuidePrice} per person
                       </span>
@@ -160,29 +167,38 @@ const TourDetailsPage = () => {
                     <h5>Budget Details</h5>
                     <Row>
                       <Col md="4">
-                        <div className="budget-card">
-                          <h6>Low Budget</h6>
-                          <p>{budgetDetails?.lowBudget?.hotelType}</p>
-                          <p>{budgetDetails?.lowBudget?.travelType}</p>
+                        <div
+                          className="budget-card"
+                          onClick={() => handleBudgetCardClick("LOW")}
+                        >
+                          <h6>Budget Friendly</h6>
+                          <p>{budgetDetails?.BudgetFriendly?.hotelType}</p>
+                          <p>{budgetDetails?.BudgetFriendly?.travelType}</p>
                         </div>
                       </Col>
                       <Col md="4">
-                        <div className="budget-card">
-                          <h6>Mid Budget</h6>
-                          <p>{budgetDetails?.midBudget?.hotelType}</p>
-                          <p>{budgetDetails?.midBudget?.travelType}</p>
+                        <div
+                          className="budget-card"
+                          onClick={() => handleBudgetCardClick("MID")}
+                        >
+                          <h6>Luxuery</h6>
+                          <p>{budgetDetails?.Luxuery?.hotelType}</p>
+                          <p>{budgetDetails?.Luxuery?.travelType}</p>
                         </div>
                       </Col>
                       <Col md="4">
-                        <div className="budget-card">
-                          <h6>High Budget</h6>
-                          <p>{budgetDetails?.highBudget?.hotelType}</p>
-                          <p>{budgetDetails?.highBudget?.travelType}</p>
+                        <div
+                          className="budget-card"
+                          onClick={() => handleBudgetCardClick("HIGH")}
+                        >
+                          <h6>Standard</h6>
+                          <p>{budgetDetails?.Standard?.hotelType}</p>
+                          <p>{budgetDetails?.Standard?.travelType}</p>
                         </div>
                       </Col>
                     </Row>
-                    <div className="budget-filter">
-                    <Form className="d-flex align-items-center gap-4">
+                    {/* <div className="budget-filter">
+                      <Form className="d-flex align-items-center gap-4">
                         <label htmlFor="budgetType">
                           Filter by Budget Type:
                         </label>
@@ -203,12 +219,12 @@ const TourDetailsPage = () => {
                           <i class="ri-search-line"></i>
                         </span>
                       </Form>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="tour__reviews">
                     <h4>Reviews ({reviews?.length} reviews)</h4>
-                    <Form onSubmit={submitHandler}>
+                    {/* <Form onSubmit={submitHandler}>
                       <div className="d-flex align-items-center gap-3 mb-4 rating__group">
                         <span onClick={() => setTourRating(1)}>
                           1 <i class="ri-star-s-fill"></i>
@@ -240,7 +256,7 @@ const TourDetailsPage = () => {
                           Submit
                         </button>
                       </div>
-                    </Form>
+                    </Form> */}
                     <ListGroup className="user__reviews">
                       {reviews?.map((review, index) => (
                         <div className="review__item">
@@ -283,7 +299,7 @@ const TourDetailsPage = () => {
           )}
         </Container>
       </section>
-      <Newsletter />
+      {/* <Newsletter /> */}
     </>
   );
 };

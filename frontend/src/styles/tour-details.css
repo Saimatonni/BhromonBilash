@@ -145,8 +145,17 @@
     height: 250px;
     border-radius: 5px;
     margin-bottom: 20px;
+    cursor: pointer;
     margin-top: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .budget-card:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .budget-card.clicked {
+    background-color: #e6e6e6;
   }
   
   .budget-card h6 {

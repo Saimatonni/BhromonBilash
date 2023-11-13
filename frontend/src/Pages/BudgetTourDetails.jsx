@@ -4,19 +4,30 @@ import TourCard from "../shared/TourCard";
 import SearchBar from "../shared/SearchBar";
 import Newsletter from "../shared/Newsletter";
 import tourData from "../assets/data/tours";
-import { Container, Row, Col, Card, Button, CardBody, Input } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  CardBody,
+  Input,
+  Form,
+  FormGroup,
+} from "reactstrap";
 import useFetch from "../hooks/useFetch";
 import { BASE_URL } from "../utils/config";
 import { useBookingInfo } from "../context/BookingContext";
 import { useParams } from "react-router-dom";
 import "../styles/BudgetTourDetails.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BudgetTourDetails = () => {
   const [pageCount, setPageCount] = useState(0);
   const { bookingInfo, setBookingInfo } = useBookingInfo();
   const { id, budgetType } = useParams();
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     setBookingInfo((prevBookingInfo) => ({
       ...prevBookingInfo,
@@ -52,18 +63,21 @@ const BudgetTourDetails = () => {
       if (prevSelectedHotels.includes(hotelId)) {
         return prevSelectedHotels.filter((id) => id !== hotelId);
       } else {
-        const selectedHotel = hotelsData.hotels.find((hotel) => hotel._id === hotelId);
-      setSelectedHotelExtraPrices({
-        seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
-        hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
-      });
-      setBookingInfo((prevBookingInfo) => ({
-        ...prevBookingInfo,
-        seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
-        hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
-        singleBedPrice: selectedHotel.singleBedPrice || 0,
-        doubleBedPrice: selectedHotel.doubleBedPrice || 0,
-      }));
+        const selectedHotel = hotelsData.hotels.find(
+          (hotel) => hotel._id === hotelId
+        );
+        setSelectedHotelExtraPrices({
+          seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
+          hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
+        });
+        setBookingInfo((prevBookingInfo) => ({
+          ...prevBookingInfo,
+          // seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
+          // hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
+          singleBedPrice: selectedHotel.singleBedPrice || 0,
+          doubleBedPrice: selectedHotel.doubleBedPrice || 0,
+          allTravels: hotelsData.travels,
+        }));
         return [...prevSelectedHotels, hotelId];
       }
     });
@@ -87,11 +101,19 @@ const BudgetTourDetails = () => {
     const selectedCharge = hotelsData?.travels.find(
       (travel) => travel._id === travelId
     )?.charge;
+    const selectedSource = hotelsData?.travels.find(
+      (travel) => travel._id === travelId
+    )?.source;
+    const selectedtime = hotelsData?.travels.find(
+      (travel) => travel._id === travelId
+    )?.time;
     setBookingInfo((prevBookingInfo) => ({
       ...prevBookingInfo,
       travelid: travelId,
       TravelTime: selectedTime,
       TravelCharge: selectedCharge,
+      travelSource: selectedSource,
+      travelAlltime: selectedtime,
     }));
     setSelectedTravels((prevSelectedHotels) => {
       if (prevSelectedHotels.includes(travelId)) {
@@ -104,14 +126,53 @@ const BudgetTourDetails = () => {
 
   const isTravelSelected = (travelId) => selectedTravels.includes(travelId);
 
-  // console.log("booking info", bookingInfo);
+  const handleCardClick = (hotelId) => {
+    setSelectedHotel(hotelId);
+    setSelectedHotels((prevSelectedHotels) => {
+      if (prevSelectedHotels.includes(hotelId)) {
+        return prevSelectedHotels.filter((id) => id !== hotelId);
+      } else {
+        const selectedHotel = hotelsData.hotels.find(
+          (hotel) => hotel._id === hotelId
+        );
+        setSelectedHotelExtraPrices({
+          seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
+          hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
+        });
+        setBookingInfo((prevBookingInfo) => ({
+          ...prevBookingInfo,
+          // seaFacingExtraPrice: selectedHotel.seaFacingExtraPrice || 0,
+          // hillFacingExtraPrice: selectedHotel.hillFacingExtraPrice || 0,
+          singleBedPrice: selectedHotel.singleBedPrice || 0,
+          doubleBedPrice: selectedHotel.doubleBedPrice || 0,
+          allTravels: hotelsData.travels,
+        }));
+        return [...prevSelectedHotels, hotelId];
+      }
+    });
+    setTimeout(() => {
+      navigate(`/room/${hotelId}/${budgetType}`);
+    }, 1000);
+    // navigate(`/room/${hotelId}/${budgetType}`);
+  };
 
-  // useEffect(() => {
-  //   console.log("Selected Travel Times:");
-  //   Object.entries(selectedTravelTimes).forEach(([travelId, time]) => {
-  //     console.log(`Travel ID: ${travelId}, Time: ${time}`);
-  //   });
-  // }, [selectedTravelTimes]);
+  const [searchName, setSearchName] = useState("");
+  const [searchDistance, setSearchDistance] = useState("");
+const [searchLocation, setSearchLocation] = useState("");
+  // const filteredHotels = searchName
+  //   ? hotelsData?.hotels?.filter((hotel) =>
+  //       hotel.name.toLowerCase().includes(searchName.toLowerCase())
+  //     )
+  //   : hotelsData?.hotels;
+
+
+    const filteredHotels = hotelsData?.hotels?.filter((hotel) => {
+      const nameMatch = hotel.name.toLowerCase().includes(searchName.toLowerCase());
+      const distanceMatch = !searchDistance || hotel.distance <= Number(searchDistance);
+      const locationMatch = hotel.address.toLowerCase().includes(searchLocation.toLowerCase());
+    
+      return nameMatch && distanceMatch && locationMatch;
+    }) || hotelsData?.hotels;
 
   return (
     <>
@@ -124,13 +185,57 @@ const BudgetTourDetails = () => {
           <>
             <section className="pt-0">
               <Container>
+                <div className="search__bar">
+                  <Form className="d-flex align-items-center gap-4">
+                    <FormGroup className="d-flex gap-3 form__group form__group-fast">
+                      <i class="ri-hotel-fill"></i>
+                      <div>
+                        <h6>Name</h6>
+                        <input
+                          type="text"
+                          placeholder="Search Hotel Name"
+                          value={searchName}
+                          onChange={(e) => setSearchName(e.target.value)}
+                        />
+                      </div>
+                    </FormGroup>
+                    <FormGroup className="d-flex gap-3 form__group form__group-fast">
+                      <i class="ri-map-pin-add-line"></i>
+                      <div>
+                        <h6>Distance</h6>
+                        <input
+                        type="number"
+                        placeholder="Distance k/m"
+                        value={searchDistance}
+                        onChange={(e) => setSearchDistance(e.target.value)}
+                      />
+                      </div>
+                    </FormGroup>
+                    <FormGroup className="d-flex gap-3 form__group form__group-last">
+                      <i class="ri-map-pin-line"></i>
+                      <div>
+                        <h6>Address</h6>
+                        <input
+                        type="text"
+                        placeholder="Search location"
+                        value={searchLocation}
+                        onChange={(e) => setSearchLocation(e.target.value)}
+                      />
+                      </div>
+                    </FormGroup>
+                  </Form>
+                </div>
+                {filteredHotels.length > 0 ? (
                 <Row>
-                  {hotelsData?.hotels?.map((hotel) => (
+                  {/* {hotelsData?.hotels?.map((hotel) => ( */}
+                  {filteredHotels?.map((hotel) => (
                     <Col lg="4" key={hotel._id}>
+                      {/* <Link to={`/room/${hotel._id}/${budgetType}`}/> */}
                       <Card
                         className={`hotel-card ${
                           isHotelSelected(hotel._id) ? "selected" : ""
                         }`}
+                        onClick={() => handleCardClick(hotel._id)}
                       >
                         <div className="card-image-container">
                           <Card>
@@ -146,7 +251,8 @@ const BudgetTourDetails = () => {
                                   {hotel.discount &&
                                     hotel.discount.length > 0 && (
                                       <span className="discount-badge">
-                                        {hotel.discount[0].amount}% off
+                                        {hotel.discount[0].amount}% off{" "}
+                                        {hotel.discount[0].to}
                                       </span>
                                     )}
                                 </h5>
@@ -183,7 +289,7 @@ const BudgetTourDetails = () => {
                             <p className="hotel-details">
                               Distance: {hotel.distance} km
                             </p>
-                            <Button
+                            {/* <Button
                               className={`book-button mt-2 ml-auto ${
                                 isHotelSelected(hotel._id) ? "selected" : ""
                               }`}
@@ -198,16 +304,21 @@ const BudgetTourDetails = () => {
                               {isHotelSelected(hotel._id)
                                 ? "Selected Hotel"
                                 : "Select"}
-                            </Button>
+                            </Button> */}
                           </CardBody>
                         </div>
                       </Card>
                     </Col>
                   ))}
                 </Row>
+                 ) : (
+                  <div className="text-center pt-5">
+                    <h4>No Hotels found</h4>
+                  </div>
+                )}
               </Container>
             </section>
-            <section className="travels-section pt-4">
+            {/* <section className="travels-section pt-4">
               <div className="text-center pt-10 mb-20">
                 <h2 className="">Travels available</h2>
               </div>
@@ -268,8 +379,8 @@ const BudgetTourDetails = () => {
                   </div>
                 )}
               </Container>
-            </section>
-            <section className="pt-0">
+            </section> */}
+            {/* <section className="pt-0">
               <Container>
             
             <Button
@@ -280,7 +391,7 @@ const BudgetTourDetails = () => {
               <Link to={`/room/${selectedHotel}/${budgetType}`}>Book Hotel Room</Link>
             </Button>
             </Container>
-            </section>
+            </section> */}
           </>
         ) : (
           <div className="text-center pt-5">
@@ -288,7 +399,7 @@ const BudgetTourDetails = () => {
           </div>
         ))}
 
-      <Newsletter />
+      {/* <Newsletter /> */}
     </>
   );
 };

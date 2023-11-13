@@ -7,3 +7,27 @@
    font-style: 3.6rem;
    font-family: var(--subtitle-font-name); 
 }
+
+.tour-card {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 700px;
+  overflow: hidden;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: #333;
+  font-style: 4rem;
+}
+
+.card-image {
+  height: 200px; 
+  object-fit: cover;
+}
+
+.card-text {
+  margin-bottom: 10px;
+}

@@ -59,6 +59,7 @@ const RoomDetails = () => {
     const countSelectedBeds = (rooms) => {
       let singleCount = 0;
       let doubleCount = 0;
+      const bookedDates = {};
 
       rooms.forEach((roomId) => {
         const room = RoomsData.flatMap((hotel) => hotel.singleBedRooms).find(
@@ -68,8 +69,6 @@ const RoomDetails = () => {
         const doubleBedRoom = RoomsData.flatMap(
           (hotel) => hotel.doubleBedRooms
         ).find((room) => room._id === roomId);
-
-       
 
         if (room) {
           singleCount++;
@@ -95,30 +94,63 @@ const RoomDetails = () => {
       return room.number;
     });
 
+    const bookedDates = updatedSelectedRooms.flatMap((roomId) => {
+      const room = RoomsData.flatMap((hotel) => [
+        ...hotel.singleBedRooms,
+        ...hotel.doubleBedRooms,
+      ]).find((room) => room._id === roomId);
+  
+      // return room;
+      return {
+        number: room.number,
+        bookedDates: room.bookedDates,
+      };
+    });
+
+    const selectedRoomDetails = updatedSelectedRooms.flatMap((roomId) => {
+      const room = RoomsData.flatMap((hotel) => [
+        ...hotel.singleBedRooms,
+        ...hotel.doubleBedRooms,
+      ]).find((room) => room._id === roomId);
+  
+      return room;
+      // return {
+      //   number: room.number,
+      //   datesstart: room.bookedDates.start,
+      //   dateend: room.bookedDates.end,
+      // };
+    });
+
+    // const BookedDates = RoomsData.flatMap((hotel) => hotel.singleBedRooms).filter(
+    //   (room) => room._id === roomId
+    // );
+
     const room3 = RoomsData.map((hotel) => hotel.seaFacingExtraPrice)[0];
     const room4 = RoomsData.map((hotel) => hotel.hillFacingExtraPrice)[0];
 
-    const hilling = RoomsData.flatMap(
-      (hotel) => hotel.singleBedRooms
-    ).filter((room) => room._id === roomId && room.hillFacing === true);
+    const hilling = RoomsData.flatMap((hotel) => hotel.singleBedRooms).filter(
+      (room) => room._id === roomId && room.hillFacing === true
+    );
 
-    const hilling2 = RoomsData.flatMap(
-      (hotel) => hotel.doubleBedRooms
-    ).filter((room) => room._id === roomId && room.hillFacing === true);
+    const hilling2 = RoomsData.flatMap((hotel) => hotel.doubleBedRooms).filter(
+      (room) => room._id === roomId && room.hillFacing === true
+    );
 
-    const sea = RoomsData.flatMap(
-      (hotel) => hotel.singleBedRooms
-    ).filter((room) => room._id === roomId && room.seaFacing === true);
+    const sea = RoomsData.flatMap((hotel) => hotel.singleBedRooms).filter(
+      (room) => room._id === roomId && room.seaFacing === true
+    );
 
-    const sea2 = RoomsData.flatMap(
-      (hotel) => hotel.doubleBedRooms
-    ).filter((room) => room._id === roomId && room.seaFacing === true);
+    const sea2 = RoomsData.flatMap((hotel) => hotel.doubleBedRooms).filter(
+      (room) => room._id === roomId && room.seaFacing === true
+    );
 
     setBookingInfo({
       ...bookingInfo,
       selectedRooms: selectedRoomNumbers,
-      hillingExtraPrice: room4 * hilling.length + room4 * hilling2.length,
-      seaExtraPrice: room3 * sea.length + room3 * sea2.length,
+      seahillingSingleExtraPrice: room4 * hilling.length + room3 * sea.length,
+      seahillingDoubleExtraPrice: room4 * hilling2.length + room3 * sea2.length,
+      selectedRoomDetails: selectedRoomDetails,
+      bookedDates: bookedDates,
     });
 
     setSelectedRooms(updatedSelectedRooms);
@@ -127,23 +159,58 @@ const RoomDetails = () => {
   useEffect(() => {
     const room1 = RoomsData.map((hotel) => hotel.singleBedPrice)[0];
     const room2 = RoomsData.map((hotel) => hotel.doubleBedPrice)[0];
+
+    const discount = RoomsData.length > 0 ? RoomsData[0].discount : [];
+
+    const singleBedDiscount =
+      discount && discount.find((item) => item.to === "SINGLE");
+    const doubleBedDiscount =
+      discount && discount.find((item) => item.to === "DOUBLE");
+
+    const singleBedDiscountAmount = singleBedDiscount
+      ? (room1 * singleBedCount * singleBedDiscount.amount) / 100
+      : 0;
+
+    const doubleBedDiscountAmount = doubleBedDiscount
+      ? (room2 * doubleBedCount * doubleBedDiscount.amount) / 100
+      : 0;
+
+    const selectedSingleBedIds = selectedRooms.filter((roomId) => {
+      const room = RoomsData.flatMap((hotel) => hotel.singleBedRooms).find(
+        (room) => room._id === roomId
+      );
+      return room !== undefined;
+    });
+
+    const selectedDoubleBedIds = selectedRooms.filter((roomId) => {
+      const room = RoomsData.flatMap((hotel) => hotel.doubleBedRooms).find(
+        (room) => room._id === roomId
+      );
+      return room !== undefined;
+    });
     setBookingInfo((prevBookingInfo) => ({
       ...prevBookingInfo,
       hotelId: id,
       budgetType: budgetType,
-      singleBedPrice: room1 * singleBedCount,
-      doubleBedPrice: room2 * doubleBedCount,
-      selectedRoomsInfo: selectedRooms.map((roomId) => {
-        const room = RoomsData.flatMap((hotel) => [
-          ...hotel.singleBedRooms,
-          ...hotel.doubleBedRooms,
-        ]).find((room) => room._id === roomId);
+      singleBedDiscountAmount: singleBedDiscountAmount,
+      doubleBedDiscountAmount: doubleBedDiscountAmount,
+      singleBedPricetotal: room1 * singleBedCount,
+      doubleBedPricetotal: room2 * doubleBedCount,
+      singleBedCount: singleBedCount,
+      doubleBedCount: doubleBedCount,
+      selectedSingleBedIds: selectedSingleBedIds,
+      selectedDoubleBedIds: selectedDoubleBedIds,
+      // selectedRoomsInfo: selectedRooms.map((roomId) => {
+      //   const room = RoomsData.flatMap((hotel) => [
+      //     ...hotel.singleBedRooms,
+      //     ...hotel.doubleBedRooms,
+      //   ]).find((room) => room._id === roomId);
 
-        return {
-          id: room._id,
-          type: room.singleBed ? "Single Bed" : "Double Bed",
-        };
-      }),
+      //   return {
+      //     id: room._id,
+      //     type: room.singleBed ? "Single Bed" : "Double Bed",
+      //   };
+      // }),
     }));
   }, [id, budgetType, selectedRooms, singleBedCount, doubleBedCount]);
 
@@ -160,7 +227,7 @@ const RoomDetails = () => {
           {error && <h4 className="text-center pt-5">{error}</h4>}
           {!loading && !error && RoomsData && (
             <Row>
-              <Col lg="8">
+              <Col lg="25">
                 {RoomsData.map((hotel) => (
                   <Col
                     key={hotel._id}
@@ -174,34 +241,36 @@ const RoomDetails = () => {
                         <h4 className="RoomDetails-roomTypeHeading">
                           Single Bed Rooms:
                         </h4>
-                        {/* <Row> */}
-                        {hotel.singleBedRooms.map((room) => (
-                          // <Col lg="5" key={room._id}>
-                          <Card
-                            className={`room-card ${
-                              selectedRooms.includes(room._id) ? "selected" : ""
-                            }`}
-                            key={room._id}
-                            onClick={() => toggleRoomSelection(room._id)}
-                          >
-                            <CardBody>
-                              <h5 className="mb-3">
-                                Room Number: {room.number}
-                              </h5>
-                              <p>
-                                {room.seaFacing
-                                  ? "Have SeaFacing"
-                                  : "No SeaFacing"}
-                                ,
-                                {room.hillFacing
-                                  ? "Have HillFaching"
-                                  : "No HillFacing"}
-                              </p>
-                            </CardBody>
-                          </Card>
-                          // </Col>
-                        ))}
-                        {/* </Row> */}
+                        <Row>
+                          {hotel.singleBedRooms.map((room) => (
+                            <Col lg="5" key={room._id}>
+                              <Card
+                                className={`room-card ${
+                                  selectedRooms.includes(room._id)
+                                    ? "selected"
+                                    : ""
+                                }`}
+                                key={room._id}
+                                onClick={() => toggleRoomSelection(room._id)}
+                              >
+                                <CardBody>
+                                  <h5 className="mb-3">
+                                    Room Number: {room.number}
+                                  </h5>
+                                  <p>
+                                    {room.seaFacing
+                                      ? "Have SeaFacing"
+                                      : "No SeaFacing"}
+                                    ,
+                                    {room.hillFacing
+                                      ? "Have HillFaching"
+                                      : "No HillFacing"}
+                                  </p>
+                                </CardBody>
+                              </Card>
+                            </Col>
+                          ))}
+                        </Row>
                       </>
                     )}
 
@@ -211,34 +280,36 @@ const RoomDetails = () => {
                         <h4 className="RoomDetails-roomTypeHeading">
                           Double Bed Rooms:
                         </h4>
-                        {/* <Row> */}
-                        {hotel.doubleBedRooms.map((room) => (
-                          // <Col lg="5" key={room._id}>
-                          <Card
-                            className={`room-card ${
-                              selectedRooms.includes(room._id) ? "selected" : ""
-                            }`}
-                            key={room._id}
-                            onClick={() => toggleRoomSelection(room._id)}
-                          >
-                            <CardBody>
-                              <h5 className="mb-3">
-                                Room Number: {room.number}
-                              </h5>
-                              <p>
-                                {room.seaFacing
-                                  ? "Have SeaFacing"
-                                  : "No SeaFacing"}{" "}
-                                ,
-                                {room.hillFacing
-                                  ? "Have HillFaching"
-                                  : "No HillFacing"}
-                              </p>
-                            </CardBody>
-                          </Card>
-                          // </Col>
-                        ))}
-                        {/* </Row> */}
+                        <Row>
+                          {hotel.doubleBedRooms.map((room) => (
+                            <Col lg="5" key={room._id}>
+                              <Card
+                                className={`room-card ${
+                                  selectedRooms.includes(room._id)
+                                    ? "selected"
+                                    : ""
+                                }`}
+                                key={room._id}
+                                onClick={() => toggleRoomSelection(room._id)}
+                              >
+                                <CardBody>
+                                  <h5 className="mb-3">
+                                    Room Number: {room.number}
+                                  </h5>
+                                  <p>
+                                    {room.seaFacing
+                                      ? "Have SeaFacing"
+                                      : "No SeaFacing"}{" "}
+                                    ,
+                                    {room.hillFacing
+                                      ? "Have HillFaching"
+                                      : "No HillFacing"}
+                                  </p>
+                                </CardBody>
+                              </Card>
+                            </Col>
+                          ))}
+                        </Row>
                       </>
                     )}
                     {hotel.reviews.length > 0 && (
@@ -278,14 +349,15 @@ const RoomDetails = () => {
                   </Col>
                 ))}
               </Col>
-              <Col lg="4" className="RoomDetails-bookingSection">
-                <Booking />
-              </Col>
             </Row>
           )}
+          <h1>Booking From</h1>
+          <Col lg="10" className="RoomDetails-bookingSection">
+            <Booking />
+          </Col>
         </Container>
       </section>
-      <Newsletter />
+      {/* <Newsletter /> */}
     </>
   );
 };

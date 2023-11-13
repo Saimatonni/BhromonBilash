@@ -8,7 +8,7 @@
 }
 
 .logo img{
-    width: 30%;
+    width: 80%;
     margin-top: 20px;
 }
 .menu{
@@ -49,4 +49,37 @@
     box-shadow: 3px 3px 8px -3px #ddd;
     z-index: 999;
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #e2c1c1; 
+    margin: 0;
+  }
+
+  .profile-image {
+    border-radius: 50%; 
+    border: 2px solid #fff; 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+  }
+
+  .notification-icon {
+    font-size: 24px; 
+    color: #fff; 
+    margin-left: 10px; 
+  }
+
+  .notification_icon i{
+    font-size: 1.6rem;
+    padding: 0.5rem;
+    background: var(--secondary-color);
+    color: #fff;
+    border-radius: 10px 5px 10px 5px;
+    cursor: pointer;
+  }
 

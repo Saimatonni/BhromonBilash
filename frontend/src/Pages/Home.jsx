@@ -14,8 +14,14 @@ import FeaturedTourList from '../components/Featured-tours/FeaturedTourList';
 import MasonryImagesGallery from '../components/Image-gallery/MasonryImagesGallery';
 import Testimonials from '../components/Testimonial/Testimonials';
 import Newsletter from '../shared/Newsletter';
+import { useAuth } from '../context/AuthContext';
+import useFetch from '../hooks/useFetch';
 
 const Home = () => {
+
+  const { accessToken } = useAuth();
+  const isLoggedIn = !!accessToken;
+  console.log("check login",isLoggedIn)
   return (
     <>
       <section>
@@ -52,7 +58,7 @@ const Home = () => {
                 <img src={heroImg02} alt="" />
               </div>
             </Col>
-            <SearchBar />
+            {/* <SearchBar /> */}
           </Row>
         </Container>
       </section>

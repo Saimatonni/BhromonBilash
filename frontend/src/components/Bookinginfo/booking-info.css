@@ -1,0 +1,48 @@
+.booking-container {
+    margin: 0 auto;
+    margin-top: 30px;
+  }
+
+.updown-trip {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .updown-trip h5 {
+    color: #333;
+  }
+  
+  .updown-trip div {
+    margin-bottom: 5px;
+  }
+  
+  .card-buttons button {
+    margin-top: 10px;
+  }
+
+  .bedroom-details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .bedroom-details h5 {
+    color: #333;
+  }
+
+  .card-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* .card {
+    height: 400px; 
+  }
+
+  .card-body {
+    overflow-y: auto;
+  } */
+  
+
+  

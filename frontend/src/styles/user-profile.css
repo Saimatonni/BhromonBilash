@@ -1,0 +1,51 @@
+.user-profile-section {
+    padding: 20px;
+    margin-top: 50px;
+  }
+  
+  .user-profile-card {
+    text-align: center;
+    height: 550px;
+    padding: 20px;
+  }
+  
+  .user-profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 15px auto;
+    object-fit: cover;
+  }
+  
+  .edit-profile-button {
+    margin-top: 15px;
+  }
+  .custom-button.active {
+    background-color: #007bff !important;
+    color: #fff !important;
+  }
+
+  /* .custom-button {
+    background-color: #B2BEB5;
+  }
+  
+  .custom-button:hover {
+    background-color: #7e97ca;
+  } */
+
+  .custom-button {
+    background-color: transparent !important;
+    color: #007bff !important;
+    border: 1px solid #007bff !important;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .custom-button:hover {
+    background-color: #007bff !important;
+    color: #fff !important;
+  }
+
+  

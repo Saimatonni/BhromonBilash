@@ -1,0 +1,61 @@
+/* NotificationPanel.css */
+
+.notification-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    max-width: 500px; 
+    width: 100%; 
+    border-radius: 8px; 
+    overflow: hidden;
+    max-height: 500px; 
+    height: 100%;
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .notification-list {
+    max-height: 200px;
+    overflow-y: auto;
+    
+  }
+
+  .notification-list p{
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+    
+  }
+  
+  
+  .notification-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+  }
+  
+  .close-button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    font-size: 28px;
+    color: #555;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close-button:hover {
+    background-color: #ddd;
+  }

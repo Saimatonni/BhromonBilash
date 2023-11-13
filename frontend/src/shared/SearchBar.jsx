@@ -1,48 +1,23 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "./search-bar.css";
 import { Col, Form, FormGroup } from "reactstrap";
 import { BASE_URL } from "../utils/config";
 import { useNavigate } from "react-router-dom";
-
-const SearchBar = () => {
-  const locationRef = useRef("");
-  const distanceRef = useRef(0);
-  const maxGroupSizeRef = useRef(0);
+const SearchBar = ({ onSearch }) => {
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
-//   const searchHandler = async () => {
-//     const location = locationRef.current.value;
-//     const distance = distanceRef.current.value;
-//     const maxGroupSize = maxGroupSizeRef.current.value;
-
-//     if (location === "" || distance === "" || maxGroupSize === "") {
-//       return alert("All feilds are required!");
-//     }
-//     const res = await fetch(`${BASE_URL}/tours/search/getTourBySearch?city=${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`);
-//     if (!res.ok) alert("Something went wrong");
-//     const result = await res.json();
-//     navigate(
-//       `/tours/search?city=${location}&distance=${distance}&maxGroupSize=${maxGroupSize}`,
-//       { state: result.data }
-//     );
-//   };
-
-const searchHandler = async () => {
-    const location = locationRef.current.value;
-    // const distance = distanceRef.current.value;
-    // const maxGroupSize = maxGroupSizeRef.current.value;
-
-    // if (location === "" || distance === "" || maxGroupSize === "") {
-    //   return alert("All feilds are required!");
-    // }
-    const res = await fetch(`${BASE_URL}/tours/search/getTourBySearch?location=${location}`);
-    if (!res.ok) alert("Something went wrong");
-    const result = await res.json();
-    navigate(
-      `/tours/search?location=${location}`,
-      { state: result.data }
-    );
+  const searchHandler = async () => {
+    onSearch(name);
   };
+
+  const handleInputChange = (e) => {
+    const newName = e.target.value;
+    setName(newName);
+    onSearch(newName);
+  };
+
+  // console.log("name",name)
 
   return (
     <Col lg="12">
@@ -51,15 +26,17 @@ const searchHandler = async () => {
           <FormGroup className="d-flex gap-3 form__group form__group-fast">
             <i class="ri-map-pin-line"></i>
             <div>
-              <h6>Location</h6>
+              <h6>Name</h6>
               <input
                 type="text"
                 placeholder="Where are you going?"
-                ref={locationRef}
+                value={name}
+                // onChange={(e) => setName(e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
           </FormGroup>
-          <FormGroup className="d-flex gap-3 form__group form__group-fast">
+          {/* <FormGroup className="d-flex gap-3 form__group form__group-fast">
             <i class="ri-map-pin-add-line"></i>
             <div>
               <h6>Distance</h6>
@@ -76,7 +53,7 @@ const searchHandler = async () => {
               <h6>Max People</h6>
               <input type="number" placeholder="0" ref={maxGroupSizeRef} />
             </div>
-          </FormGroup>
+          </FormGroup> */}
           <span className="search_icon" type="submit" onClick={searchHandler}>
             <i class="ri-search-line"></i>
           </span>
