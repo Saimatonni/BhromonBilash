@@ -104,15 +104,17 @@ const Header = () => {
                 <Button className='btn primary__btn'><Link to='/register'>Register</Link></Button> */}
                 {isLoggedIn ? (
                   <>
-                    <Link to="/profile">
-                      <img
-                        src={profile.image}
-                        alt="Profile Image"
-                        className="profile-image"
-                        width="40"
-                        height="40"
-                      />
-                    </Link>
+                    {profile.image && (
+                      <Link to="/profile">
+                        <img
+                          src={profile.image}
+                          alt="Profile Image"
+                          className="profile-image"
+                          width="40"
+                          height="40"
+                        />
+                      </Link>
+                    )}
                     {/* <span className="notification_icon">
                       <i className="ri-notification-3-line"></i>
                     </span> */}
@@ -144,7 +146,7 @@ const Header = () => {
                 <i class="ri-menu-line"></i>
               </span>
             </div>
-            {isNotificationOpen && profile.notifications &&(
+            {isNotificationOpen && profile.notifications && (
               <NotificationPanel
                 // notifications={notifications}
                 notifications={profile.notifications}
