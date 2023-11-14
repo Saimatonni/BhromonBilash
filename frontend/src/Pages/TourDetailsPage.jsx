@@ -181,9 +181,9 @@ const TourDetailsPage = () => {
                           className="budget-card"
                           onClick={() => handleBudgetCardClick("MID")}
                         >
-                          <h6>Luxuery</h6>
-                          <p>{budgetDetails?.Luxuery?.hotelType}</p>
-                          <p>{budgetDetails?.Luxuery?.travelType}</p>
+                          <h6>Standard</h6>
+                          <p>{budgetDetails?.Standard?.hotelType}</p>
+                          <p>{budgetDetails?.Standard?.travelType}</p>
                         </div>
                       </Col>
                       <Col md="4">
@@ -191,9 +191,9 @@ const TourDetailsPage = () => {
                           className="budget-card"
                           onClick={() => handleBudgetCardClick("HIGH")}
                         >
-                          <h6>Standard</h6>
-                          <p>{budgetDetails?.Standard?.hotelType}</p>
-                          <p>{budgetDetails?.Standard?.travelType}</p>
+                          <h6>Luxury</h6>
+                          <p>{budgetDetails?.Luxury?.hotelType}</p>
+                          <p>{budgetDetails?.Luxury?.travelType}</p>
                         </div>
                       </Col>
                     </Row>

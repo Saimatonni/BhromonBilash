@@ -225,12 +225,12 @@ const Booking = () => {
         bookingInfo.singleBedCount *
         calculateTotalDays() +
       bookingInfo.seahillingSingleExtraPrice -
-      bookingInfo.singleBedDiscountAmount +
+      bookingInfo.singleBedDiscountAmount * calculateTotalDays() +
       bookingInfo.doubleBedPrice *
         bookingInfo.doubleBedCount *
         calculateTotalDays() +
       bookingInfo.seahillingDoubleExtraPrice -
-      bookingInfo.doubleBedDiscountAmount;
+      bookingInfo.doubleBedDiscountAmount * calculateTotalDays();
 
     const overallTotalPrice =
       uptripPrice + downtripPrice + tourGuidePrice + totalBedPrice;
@@ -518,14 +518,14 @@ const Booking = () => {
                   {calculateTotalDays()} day <i class="ri-add-line"></i> Extra
                   Price {bookingInfo.seahillingSingleExtraPrice}{" "}
                   <i class="ri-subtract-line"></i>{" "}
-                  {bookingInfo.singleBedDiscountAmount *  calculateTotalDays()} discount
+                  {bookingInfo.singleBedDiscountAmount * calculateTotalDays()} discount
                 </h5>
                 <span>
                   {bookingInfo.singleBedPrice *
                     bookingInfo.singleBedCount *
                     calculateTotalDays() +
                     bookingInfo.seahillingSingleExtraPrice -
-                    bookingInfo.singleBedDiscountAmount}
+                    bookingInfo.singleBedDiscountAmount * calculateTotalDays()}
                 </span>
               </>
             )}
@@ -556,7 +556,7 @@ const Booking = () => {
                     bookingInfo.doubleBedCount *
                     calculateTotalDays()  +
                     bookingInfo.seahillingDoubleExtraPrice -
-                    bookingInfo.doubleBedDiscountAmount}
+                    bookingInfo.doubleBedDiscountAmount * calculateTotalDays()}
                 </span>
               </>
             )}

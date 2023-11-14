@@ -16,7 +16,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { setAccessToken } = useAuth();
   const [credentials, setCredentials] = useState({
     email: undefined,
     password: undefined,
@@ -42,9 +42,9 @@ const Login = () => {
         const data = await response.json();
         console.log("Login successful", data);
         const accessToken = data.data.jwtAccessToken;
-        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem('accessToken', accessToken);
         console.log("acesstoken:", accessToken);
-        setToken(accessToken);
+        setAccessToken(accessToken);
         navigate("/");
       } else {
         alert("Login failed");

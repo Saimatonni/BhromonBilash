@@ -5,22 +5,27 @@ import maleTourist from "../assets/images/male-tourist.png";
 import useFetch from "../hooks/useFetch";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../context/ApiContext";
 
 const Newsletter = () => {
   const { accessToken, logout } = useAuth();
   const navigate = useNavigate()
+  const { userData } = useApi();
   const [profile, setProfile] = useState(null);
-  const {
-    data: initialProfile,
-    loading,
-    error,
-  } = useFetch("http://localhost:3000/api/profile", {
-    accessToken: accessToken,
-  });
+  // const {
+  //   data: initialProfile,
+  //   loading,
+  //   error,
+  // } = useFetch("http://localhost:3000/api/profile", {
+  //   accessToken: accessToken,
+  // });
 
   useEffect(() => {
-    setProfile(initialProfile);
-  }, [initialProfile]);
+
+    setProfile(userData);
+  }, [userData]);
+
+
   const [isSubscribing, setIsSubscribing] = useState(false);
   const handleSubscriptionToggle = async () => {
     try {

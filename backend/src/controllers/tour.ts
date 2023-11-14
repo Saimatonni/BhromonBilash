@@ -13,7 +13,7 @@ const budgetDetails = {
         hotelType : "4-star hotels for taking care of your budget and comfort. We are connected to the best 4-star hotels of the country.",
         travelType : "AC Bus service for your up and down trips. We provide most descent seating facility."    
     },
-    Luxuery : {
+    Luxury : {
         hotelType : "5-star hotels for your luxury and deluxe. Those hotels will take care for your every desire.",
         travelType : "AC Bus service for your up and down trips with snacks and drinks as complementary. We take care for our every customer."
     }

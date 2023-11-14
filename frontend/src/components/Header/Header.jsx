@@ -6,6 +6,7 @@ import "./Header.css";
 import { useAuth } from "../../context/AuthContext";
 import useFetch from "../../hooks/useFetch";
 import NotificationPanel from "../Notification/Notification";
+import { useApi } from "../../context/ApiContext";
 
 const nav_Link = [
   {
@@ -23,16 +24,25 @@ const nav_Link = [
 ];
 
 const Header = () => {
-  const { accessToken, logout } = useAuth();
+  const { accessToken, logout,  isAuthenticated } = useAuth();
+  const { userData } = useApi();
+  const [profile, setProfile] = useState(null);
   // const { data: profile, loading, error } = useFetch('http://localhost:3000/api/profile');
-  const {
-    data: profile,
-    loading,
-    error,
-  } = useFetch("http://localhost:3000/api/profile", {
-    accessToken: accessToken,
-  });
-  // console.log("profile", profile);
+  // const {
+  //   data: profile,
+  //   loading,
+  //   error,
+  // } = useFetch("http://localhost:3000/api/profile", {
+  //   accessToken: accessToken,
+  // });
+
+  useEffect(() => {
+
+    setProfile(userData);
+  }, [userData]);
+
+  // console.log("user data",userData.image)
+ 
   const headerRef = useRef(null);
   const stickyHeaderFunc = () => {
     window.addEventListener("scroll", () => {
@@ -74,6 +84,7 @@ const Header = () => {
   return (
     <header className="Header" ref={headerRef}>
       <Container>
+        
         <Row>
           <div className="nav_wrapper d-flex align-item-center justify-content-between">
             <div className="logo">
@@ -102,18 +113,22 @@ const Header = () => {
               <div className="nav_btns d-flex align-items-center gap-4">
                 {/* <Button className='btn secondary__btn'><Link to='/login'>Login</Link></Button>
                 <Button className='btn primary__btn'><Link to='/register'>Register</Link></Button> */}
-                {isLoggedIn ? (
+                {isAuthenticated ? (
                   <>
-                    {profile.image && (
+                    {userData? (
                       <Link to="/profile">
                         <img
-                          src={profile.image}
+                          src={userData.image}
                           alt="Profile Image"
                           className="profile-image"
                           width="40"
                           height="40"
                         />
                       </Link>
+                    ):(
+                      <span className="w-[50px] h-[50px] mt-15 rounded-full">
+                      Profile
+                    </span>
                     )}
                     {/* <span className="notification_icon">
                       <i className="ri-notification-3-line"></i>
@@ -146,10 +161,10 @@ const Header = () => {
                 <i class="ri-menu-line"></i>
               </span>
             </div>
-            {isNotificationOpen && profile.notifications && (
+            {isNotificationOpen && userData.notifications && (
               <NotificationPanel
                 // notifications={notifications}
-                notifications={profile.notifications}
+                notifications={userData.notifications}
                 onClose={closeNotificationPanel}
               />
             )}

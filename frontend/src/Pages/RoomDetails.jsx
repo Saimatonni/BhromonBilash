@@ -235,6 +235,10 @@ const RoomDetails = () => {
                     className="mb-4 RoomDetails-section"
                   >
                     <h1 className="RoomDetails-hotelName">{hotel.name}</h1>
+                    <h6>Signle Bed Price {hotel.singleBedPrice}</h6>
+                    <h6>Double Bed Price {hotel.doubleBedPrice}</h6>
+                    <h6>Sea Faching Price {hotel.seaFacingExtraPrice}</h6>
+                    <h6>Hill Faching Price {hotel.hillFacingExtraPrice}</h6>
 
                     {hotel.singleBedRooms.length > 0 && (
                       <>
