@@ -234,7 +234,7 @@ export const getBookingsForUser = async (userId: string) => {
 export const deleteBooking = async (bookingId: string) => {
   const currentDate = new Date();
   const sevenDaysAhead = new Date(currentDate);
-  sevenDaysAhead.setDate(currentDate.getDate() + 8);
+  sevenDaysAhead.setDate(currentDate.getDate() + 7);
 
   const session = await mongoose.startSession();
 

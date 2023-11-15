@@ -84,7 +84,7 @@ export const pushDiscount : RequestHandler =async (req,res,next) => {
         else if(budgetType===EBudgetType.MID){
             result = await createDiscountFourStarHotel(hotelId,{to,type,amount})
         }
-        else if(budgetType===EBudgetType){
+        else if(budgetType===EBudgetType.HIGH){
             result = await createDiscountFiveStarHotel(hotelId,{to,type,amount})
         }
         else{

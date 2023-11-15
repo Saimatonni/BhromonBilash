@@ -18,6 +18,10 @@ export class SubscriberClient implements ISubscriber{
         this.notificationSystem = notificationSystem
     }
 
+    setNotificationSystem(notificationSystem : INotificationSubject){
+        this.notificationSystem = notificationSystem
+    }
+
     async update(notificationObject : INotificationObject) {
         return await pushNotifications(notificationObject)
     }
