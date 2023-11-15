@@ -488,7 +488,7 @@ const RoomDetails = () => {
                         <Col>
                           {hotel.discount && hotel.discount.length > 0 && (
                              <div className="discount-section">
-                             <span className="discount-badge">
+                             <span className="discount-badge2">
                                Discounts{" "}
                                {hotel.discount.map((discount, index) => (
                                  <span
