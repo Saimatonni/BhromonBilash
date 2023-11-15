@@ -114,5 +114,25 @@
     color: red; 
     font-weight: bold;
   }
+
+  .discount-section {
+    text-align: center;
+  }
+  
+  .discount-badge {
+    background-color: #f8d7da; 
+    color: #721c24; 
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  .highlighted-discount {
+    background-color: #f8d7da; 
+    color: #721c24; 
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin: 0 2px;
+  }
   
   

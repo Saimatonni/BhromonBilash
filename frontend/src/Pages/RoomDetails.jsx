@@ -18,7 +18,7 @@ import {
 } from "reactstrap";
 import useFetch from "../hooks/useFetch";
 import { BASE_URL } from "../utils/config";
-import { useBookingInfo  } from "../context/BookingContext";
+import { useBookingInfo } from "../context/BookingContext";
 import { useParams } from "react-router-dom";
 import "../styles/room-details.css";
 import { Link } from "react-router-dom";
@@ -30,14 +30,14 @@ const RoomDetails = () => {
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
-      e.returnValue = '';
-      window.location.href = '/tours';
+      e.returnValue = "";
+      window.location.href = "/tours";
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
   const [pageCount, setPageCount] = useState(0);
@@ -50,7 +50,7 @@ const RoomDetails = () => {
     const locationState = location.state;
     if (locationState && locationState.bookingInfo) {
       setBookingInfo(locationState.bookingInfo);
-      console.log("locaton booking",locationState.bookingInfo)
+      console.log("locaton booking", locationState.bookingInfo);
     }
   }, [location.state, setBookingInfo]);
 
@@ -80,6 +80,10 @@ const RoomDetails = () => {
   const [hillFacingDoubleBedCount, setHillFacingDoubleBedCount] = useState(0);
 
   const toggleRoomSelection = (roomId) => {
+    if (!startBookingDate || !endBookingDate) {
+      alert("Please provide booking dates before selecting a room.");
+      return;
+    }
     let updatedSelectedRooms;
     if (selectedRooms.includes(roomId)) {
       updatedSelectedRooms = selectedRooms.filter((id) => id !== roomId);
@@ -227,6 +231,7 @@ const RoomDetails = () => {
       discount && discount.find((item) => item.to === "SINGLE");
     const doubleBedDiscount =
       discount && discount.find((item) => item.to === "DOUBLE");
+    const allBedDiscount = discount.find((item) => item.to === "ALL");
 
     const singleBedDiscountAmount = singleBedDiscount
       ? (room1 * singleBedCount * singleBedDiscount.amount) / 100
@@ -236,14 +241,32 @@ const RoomDetails = () => {
       ? (room2 * doubleBedCount * doubleBedDiscount.amount) / 100
       : 0;
 
+    const allsinglediscount = allBedDiscount
+      ? (room1 * singleBedCount * allBedDiscount.amount) / 100
+      : 0;
+
+    const alldoublediscount = allBedDiscount
+      ? (room2 * doubleBedCount * allBedDiscount.amount) / 100
+      : 0;
+
     const singleBedExtraPriceDiscount = singleBedDiscount
       ? (room3 * seaFacingSingleBedCount * singleBedDiscount.amount) / 100 +
         (room4 * hillFacingSingleBedCount * singleBedDiscount.amount) / 100
       : 0;
 
+    const singleBedExtraPriceDiscountall = allBedDiscount
+      ? (room3 * seaFacingSingleBedCount * allBedDiscount.amount) / 100 +
+        (room4 * hillFacingSingleBedCount * allBedDiscount.amount) / 100
+      : 0;
+
     const doubleBedExtraPriceDiscount = doubleBedDiscount
-      ? (room3 * seaFacingDoubleBedCount * singleBedDiscount.amount) / 100 +
-        (room4 * hillFacingDoubleBedCount * singleBedDiscount.amount) / 100
+      ? (room3 * seaFacingDoubleBedCount * doubleBedDiscount.amount) / 100 +
+        (room4 * hillFacingDoubleBedCount * doubleBedDiscount.amount) / 100
+      : 0;
+
+    const doubleBedExtraPriceDiscountall = allBedDiscount
+      ? (room3 * seaFacingDoubleBedCount * allBedDiscount.amount) / 100 +
+        (room4 * hillFacingDoubleBedCount * allBedDiscount.amount) / 100
       : 0;
 
     const selectedSingleBedIds = selectedRooms.filter((roomId) => {
@@ -259,16 +282,19 @@ const RoomDetails = () => {
       );
       return room !== undefined;
     });
+
     setBookingInfo((prevBookingInfo) => ({
       ...prevBookingInfo,
       hotelId: id,
       budgetType: budgetType,
-      singleBedDiscountAmount: singleBedDiscountAmount,
-      doubleBedDiscountAmount: doubleBedDiscountAmount,
+      singleBedDiscountAmount: singleBedDiscountAmount + allsinglediscount,
+      doubleBedDiscountAmount: doubleBedDiscountAmount + alldoublediscount,
       singleBedPricetotal: room1 * singleBedCount,
       doubleBedPricetotal: room2 * doubleBedCount,
-      singleBedExtraPriceDiscount: singleBedExtraPriceDiscount,
-      doubleBedExtraPriceDiscount: doubleBedExtraPriceDiscount,
+      singleBedExtraPriceDiscount:
+        singleBedExtraPriceDiscount + singleBedExtraPriceDiscountall,
+      doubleBedExtraPriceDiscount:
+        doubleBedExtraPriceDiscount + doubleBedExtraPriceDiscountall,
       singleBedCount: singleBedCount,
       doubleBedCount: doubleBedCount,
       selectedSingleBedIds: selectedSingleBedIds,
@@ -297,7 +323,15 @@ const RoomDetails = () => {
       //   };
       // }),
     }));
-  }, [id, budgetType, selectedRooms, singleBedCount, doubleBedCount, endBookingDate,startBookingDate]);
+  }, [
+    id,
+    budgetType,
+    selectedRooms,
+    singleBedCount,
+    doubleBedCount,
+    endBookingDate,
+    startBookingDate,
+  ]);
 
   console.log("selected room", selectedRooms);
 
@@ -321,6 +355,10 @@ const RoomDetails = () => {
       const endDate = new Date(bookedDate.end);
       const bookingStartDate = new Date(startBookingDate);
       const bookingEndDate = new Date(endBookingDate);
+      bookingStartDate.setDate(bookingStartDate.getDate() + 1);
+      bookingEndDate.setDate(bookingEndDate.getDate() + 1);
+
+      // console.log("dates...",startDate,endDate,bookingStartDate,bookingEndDate)
 
       if (
         (bookingStartDate >= startDate && bookingStartDate <= endDate) ||
@@ -334,6 +372,68 @@ const RoomDetails = () => {
 
     return true;
   };
+
+  // ...
+
+  useEffect(() => {
+    const updatedSelectedRooms = selectedRooms.filter((roomId) => {
+      const room = RoomsData.flatMap((hotel) => [
+        ...hotel.singleBedRooms,
+        ...hotel.doubleBedRooms,
+      ]).find((room) => room._id === roomId);
+
+      return isRoomAvailable(room);
+    });
+    setSelectedRooms(updatedSelectedRooms);
+    const countSelectedBeds = (rooms) => {
+      let singleCount = 0;
+      let doubleCount = 0;
+      let seaFacingSingleBedCount = 0;
+      let seaFacingDoubleBedCount = 0;
+      let hillFacingSingleBedCount = 0;
+      let hillFacingDoubleBedCount = 0;
+
+      rooms.forEach((roomId) => {
+        const room = RoomsData.flatMap((hotel) => hotel.singleBedRooms).find(
+          (room) => room._id === roomId
+        );
+
+        const doubleBedRoom = RoomsData.flatMap(
+          (hotel) => hotel.doubleBedRooms
+        ).find((room) => room._id === roomId);
+
+        if (room) {
+          singleCount++;
+          if (room.seaFacing) {
+            seaFacingSingleBedCount++;
+          }
+
+          if (room.hillFacing) {
+            hillFacingSingleBedCount++;
+          }
+        }
+
+        if (doubleBedRoom) {
+          doubleCount++;
+          if (doubleBedRoom.seaFacing) {
+            seaFacingDoubleBedCount++;
+          }
+
+          if (doubleBedRoom.hillFacing) {
+            hillFacingDoubleBedCount++;
+          }
+        }
+      });
+
+      setSingleBedCount(singleCount);
+      setDoubleBedCount(doubleCount);
+      setSeaFacingSingleBedCount(seaFacingSingleBedCount);
+      setSeaFacingDoubleBedCount(seaFacingDoubleBedCount);
+      setHillFacingSingleBedCount(hillFacingSingleBedCount);
+      setHillFacingDoubleBedCount(hillFacingDoubleBedCount);
+    };
+    countSelectedBeds(updatedSelectedRooms);
+  }, [startBookingDate, endBookingDate, RoomsData]);
 
   return (
     <>
@@ -382,6 +482,26 @@ const RoomDetails = () => {
                             Hill Facing Extra Price: $
                             {hotel.hillFacingExtraPrice}
                           </h5>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          {hotel.discount && hotel.discount.length > 0 && (
+                             <div className="discount-section">
+                             <span className="discount-badge">
+                               Discounts{" "}
+                               {hotel.discount.map((discount, index) => (
+                                 <span
+                                   key={index}
+                                   className="highlighted-discount"
+                                 >
+                                   {discount.amount}% off {discount.to}
+                                   {index !== hotel.discount.length - 1 && ", "}
+                                 </span>
+                               ))}
+                             </span>
+                           </div>
+                          )}
                         </Col>
                       </Row>
                     </div>

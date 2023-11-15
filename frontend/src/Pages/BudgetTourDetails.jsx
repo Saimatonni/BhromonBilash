@@ -26,14 +26,14 @@ const BudgetTourDetails = () => {
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       e.preventDefault();
-      e.returnValue = '';
-      window.location.href = '/tours';
+      e.returnValue = "";
+      window.location.href = "/tours";
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
   const [pageCount, setPageCount] = useState(0);
@@ -56,6 +56,8 @@ const BudgetTourDetails = () => {
   } = useFetch(
     `http://localhost:3000/api/hotel/all?budgetType=${budgetType}&tourId=${id}`
   );
+
+  console.log("hotel", hotelsData);
 
   const [page, setPage] = useState(0);
   useEffect(() => {
@@ -197,18 +199,33 @@ const BudgetTourDetails = () => {
   // console.log("faching",searchFacing)
 
   const filteredHotels =
-  hotelsData?.hotels?.filter((hotel) => {
-    const nameMatch = hotel.name.toLowerCase().includes(searchName.toLowerCase());
-    const distanceMatch = !searchDistance || hotel.distance <= Number(searchDistance);
-    const locationMatch = hotel.address.toLowerCase().includes(searchLocation.toLowerCase());
-    const facingMatch =
-      searchFacing === "sea" ? hotel.isSeaFacing : searchFacing === "hill" ? hotel.isHillFacing : true;
-    const discountMatch =
-      searchDiscount === "all" || (searchDiscount === "discount" && hotel.discount.length > 0);
+    hotelsData?.hotels?.filter((hotel) => {
+      const nameMatch = hotel.name
+        .toLowerCase()
+        .includes(searchName.toLowerCase());
+      const distanceMatch =
+        !searchDistance || hotel.distance <= Number(searchDistance);
+      const locationMatch = hotel.address
+        .toLowerCase()
+        .includes(searchLocation.toLowerCase());
+      const facingMatch =
+        searchFacing === "sea"
+          ? hotel.isSeaFacing
+          : searchFacing === "hill"
+          ? hotel.isHillFacing
+          : true;
+      const discountMatch =
+        searchDiscount === "all" ||
+        (searchDiscount === "discount" && hotel.discount.length > 0);
 
-    return nameMatch && distanceMatch && locationMatch && facingMatch && discountMatch;
-  }) || hotelsData?.hotels;
-
+      return (
+        nameMatch &&
+        distanceMatch &&
+        locationMatch &&
+        facingMatch &&
+        discountMatch
+      );
+    }) || hotelsData?.hotels;
 
   return (
     <>
@@ -255,18 +272,19 @@ const BudgetTourDetails = () => {
                           type="select"
                           value={searchFacing}
                           onChange={(e) => setSearchFacing(e.target.value)}
-                          style={{ outline: "none !important", marginTop: "10px" }}
+                          style={{
+                            outline: "none !important",
+                            marginTop: "10px",
+                          }}
                         >
-                          <option value="all">
-                            All
-                          </option>
+                          <option value="all">All</option>
                           <option value="sea">Sea Facing</option>
                           <option value="hill">Hill Facing</option>
                         </Input>
                       </div>
                     </FormGroup>
                     <FormGroup className="d-flex gap-3 form__group form__group-last">
-                    <i class="ri-gift-line"></i>
+                      <i class="ri-gift-line"></i>
                       <div>
                         <h6>Discount</h6>
                         <Input
@@ -275,7 +293,7 @@ const BudgetTourDetails = () => {
                           onChange={(e) => setSearchDiscount(e.target.value)}
                           style={{ outline: "none", marginTop: "10px" }}
                         >
-                           {/* <option value="" disabled>
+                          {/* <option value="" disabled>
                             Discount
                           </option> */}
                           <option value="all">All</option>
@@ -297,11 +315,28 @@ const BudgetTourDetails = () => {
                     </FormGroup> */}
                   </Form>
                 </div>
-                <h2 className="text-center" style={{ marginTop: "40px" }}>
+                {/* <h2 className="text-center" style={{ marginTop: "40px" }}>
                   {budgetType === "LOW"
                     ? "Non-AC Bus Service"
                     : "AC Bus Service"}
-                </h2>
+                </h2> */}
+                {budgetType === "LOW" && (
+                  <h2 className="text-center" style={{ marginTop: "40px" }}>
+                    3 Star Hotel
+                  </h2>
+                )}
+
+                {budgetType === "MID" && (
+                  <h2 className="text-center" style={{ marginTop: "40px" }}>
+                    4 Star Hotel
+                  </h2>
+                )}
+
+                {budgetType === "HIGH" && (
+                  <h2 className="text-center" style={{ marginTop: "40px" }}>
+                    5 Star Hotel
+                  </h2>
+                )}
                 {filteredHotels.length > 0 ? (
                   <Row>
                     {/* {hotelsData?.hotels?.map((hotel) => ( */}
@@ -321,7 +356,7 @@ const BudgetTourDetails = () => {
                                 alt={hotel.name}
                                 className="hotel-image"
                               />
-                              <CardBody>
+                              {/* <CardBody>
                                 <p>
                                   <h5 className="hotel-title">
                                     {hotel.name}
@@ -333,6 +368,29 @@ const BudgetTourDetails = () => {
                                         </span>
                                       )}
                                   </h5>
+                                </p>
+                                <p className="hotel-address">{hotel.address}</p>
+                              </CardBody> */}
+                              <CardBody>
+                                <p>
+                                  <h5 className="hotel-title">{hotel.name}</h5>
+                                  {hotel.discount &&
+                                    hotel.discount.length > 0 && (
+                                      <span className="discount-badge">
+                                        Discounts {" "}
+                                        {hotel.discount.map(
+                                          (discount, index) => (
+                                            <span key={index}>
+                                              {discount.amount}% off{" "}
+                                              {discount.to}
+                                              {index !==
+                                                hotel.discount.length - 1 &&
+                                                ", "}
+                                            </span>
+                                          )
+                                        )}
+                                      </span>
+                                    )}
                                 </p>
                                 <p className="hotel-address">{hotel.address}</p>
                               </CardBody>

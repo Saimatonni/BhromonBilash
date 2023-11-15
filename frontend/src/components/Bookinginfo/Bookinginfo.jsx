@@ -26,7 +26,7 @@ const Bookinginfo = () => {
   //   } = useFetch("http://localhost:3000/api/booking", {
   //     accessToken: accessToken,
   //   });
-   console.log("acces",accessToken)
+  console.log("acces", accessToken);
   const [bookingList, setBookingList] = useState(null);
   const {
     data: initialbookingList,
@@ -51,7 +51,6 @@ const Bookinginfo = () => {
         alert("Booking cancellation deadline has passed.");
         return;
       }
-
 
       // console.log("bookingId",bookingId)
 
@@ -183,138 +182,185 @@ const Bookinginfo = () => {
                       <React.Fragment>
                         <h4>Low Budget Bookings</h4>
                         <Row>
-                          {booking.lowBudgetBookings.slice().reverse().map((lowBudgetBooking) => (
-                            <Col
-                              key={lowBudgetBooking._id}
-                              sm="12"
-                              className="mb-4"
-                            >
-                              <Card className="card">
-                                <Row className="p-2">
-                                  <Col>
-                                    <CardImg
-                                      top
-                                      width="100%"
-                                      src={lowBudgetBooking.tourImages[0]}
-                                      alt={lowBudgetBooking.tourName}
-                                      style={{
-                                        width: "150px",
-                                        height: "150px",
-                                        // borderRadius: "50%",
-                                        margin: "15px auto",
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                  </Col>
-                                  <Col className="p-4">
-                                    <h2> {lowBudgetBooking.tourName}</h2>
-                                    <h4>{lowBudgetBooking.hotelName}</h4>
-                                  </Col>
-                                </Row>
-                                <CardBody className="card-body">
-                                  <p>
-                                    Booking Date:{" "}
-                                    {new Date(
-                                      lowBudgetBooking.bookingDates.start
-                                    ).toDateString()}{" "}
-                                    to{" "}
-                                    {new Date(
-                                      lowBudgetBooking.bookingDates.end
-                                    ).toDateString()}
-                                  </p>
-                                  <p>
-                                    Total Price: {lowBudgetBooking.totalPrice},  3-star hotels, Non-AC Bus
-                                  </p>
-                                  <div className="updown-trip">
-                                    <h5 className="mb-10">Uptrip</h5>
-                                    <div>
-                                      Source: {lowBudgetBooking.uptrip.source},
-                                      Time: {lowBudgetBooking.uptrip.time},
-                                      Date:{" "}
+                          {booking.lowBudgetBookings
+                            .slice()
+                            .reverse()
+                            .map((lowBudgetBooking) => (
+                              <Col
+                                key={lowBudgetBooking._id}
+                                sm="12"
+                                className="mb-4"
+                              >
+                                <Card className="card">
+                                  <Row className="p-2">
+                                    <Col>
+                                      <CardImg
+                                        top
+                                        width="100%"
+                                        src={lowBudgetBooking.tourImages[0]}
+                                        alt={lowBudgetBooking.tourName}
+                                        style={{
+                                          width: "150px",
+                                          height: "150px",
+                                          // borderRadius: "50%",
+                                          margin: "15px auto",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </Col>
+                                    <Col className="p-4">
+                                      <h2> {lowBudgetBooking.tourName}</h2>
+                                      <h4>{lowBudgetBooking.hotelName}</h4>
+                                    </Col>
+                                  </Row>
+                                  <CardBody className="card-body">
+                                    <p>
+                                      Booking Date:{" "}
                                       {new Date(
-                                        lowBudgetBooking.uptrip.date
-                                      ).toDateString()}
-                                      , Total Persons:{" "}
-                                      {lowBudgetBooking.uptrip.totalPersons}
-                                    </div>
-                                  </div>
-                                  <div className="updown-trip">
-                                    <h5>Downtrip</h5>
-                                    <div>
-                                      Source: {lowBudgetBooking.downtrip.source}
-                                      , Time: {lowBudgetBooking.downtrip.time},
-                                      Date:{" "}
+                                        new Date(
+                                          lowBudgetBooking.bookingDates.start
+                                        ).setDate(
+                                          new Date(
+                                            lowBudgetBooking.bookingDates.start
+                                          ).getDate() - 1
+                                        )
+                                      ).toDateString()}{" "}
+                                      to{" "}
                                       {new Date(
-                                        lowBudgetBooking.downtrip.date
+                                        new Date(
+                                          lowBudgetBooking.bookingDates.end
+                                        ).setDate(
+                                          new Date(
+                                            lowBudgetBooking.bookingDates.end
+                                          ).getDate() - 1
+                                        )
                                       ).toDateString()}
-                                      , Total Persons:{" "}
-                                      {lowBudgetBooking.downtrip.totalPersons}
+                                    </p>
+                                    <p>
+                                      Total Price: {lowBudgetBooking.totalPrice}
+                                      , 3-star hotels, Non-AC Bus
+                                    </p>
+                                    <div className="updown-trip">
+                                      <h5 className="mb-10">Uptrip</h5>
+                                      <div>
+                                        Source: {lowBudgetBooking.uptrip.source}
+                                        , Time: {lowBudgetBooking.uptrip.time},
+                                        Date:{" "}
+                                        {new Date(
+                                          new Date(
+                                            lowBudgetBooking.uptrip.date
+                                          ).setDate(
+                                            new Date(
+                                              lowBudgetBooking.uptrip.date
+                                            ).getDate() - 1
+                                          )
+                                        ).toDateString()}
+                                        , , Total Persons:{" "}
+                                        {lowBudgetBooking.uptrip.totalPersons}
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div className="bedroom-details">
-                                    <h5>Bedroom Details</h5>
-                                    {lowBudgetBooking.singleBedRooms.map(
-                                      (singleBedroom) => (
-                                        <p key={singleBedroom._id}>
-                                          Single Bedroom - Number:{" "}
-                                          {singleBedroom.number},
+                                    <div className="updown-trip">
+                                      <h5>Downtrip</h5>
+                                      <div>
+                                        Source:{" "}
+                                        {lowBudgetBooking.downtrip.source},
+                                        Time: {lowBudgetBooking.downtrip.time},
+                                        Date:{" "}
+                                        {new Date(
+                                          new Date(
+                                            lowBudgetBooking.downtrip.date
+                                          ).setDate(
+                                            new Date(
+                                              lowBudgetBooking.downtrip.date
+                                            ).getDate() - 1
+                                          )
+                                        ).toDateString()}
+                                        , , Total Persons:{" "}
+                                        {lowBudgetBooking.downtrip.totalPersons}
+                                      </div>
+                                    </div>
+                                    <div className="bedroom-details">
+                                      <h5>Bedroom Details</h5>
+                                      {lowBudgetBooking.singleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Single Bedroom - Numbers:{" "}
+                                          {lowBudgetBooking.singleBedRooms.map(
+                                            (singleBedroom, index) =>
+                                              `${singleBedroom.number}${
+                                                index !==
+                                                lowBudgetBooking.singleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
                                         </p>
-                                      )
-                                    )}
-                                    {lowBudgetBooking.doubleBedRooms.map(
-                                      (doubleBedroom) => (
-                                        <p key={doubleBedroom._id}>
-                                          Double Bedroom - Number:{" "}
-                                          {doubleBedroom.number},
+                                      )}
+                                      {lowBudgetBooking.doubleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Double Bedroom - Numbers:{" "}
+                                          {lowBudgetBooking.doubleBedRooms.map(
+                                            (doubleBedroom, index) =>
+                                              `${doubleBedroom.number}${
+                                                index !==
+                                                lowBudgetBooking.doubleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
                                         </p>
-                                      )
-                                    )}
-                                  </div>
-                                  <div className="card-buttons">
-                                    <Button
-                                      color="danger"
-                                      onClick={() =>
-                                        handleCancelOrder(
-                                          lowBudgetBooking._id,
-                                          lowBudgetBooking.uptrip.date
-                                        )
-                                      }
-                                    >
-                                      Cancel Order
-                                    </Button>
-                                    <Button
-                                      color="primary"
-                                      onClick={() =>
-                                        handleGiveRating(
-                                          lowBudgetBooking._id,
-                                          lowBudgetBooking.tourId,
-                                          "tour",
-                                          lowBudgetBooking.budgetType
-                                        )
-                                      }
-                                      className="ml-2"
-                                    >
-                                      Rate Tour
-                                    </Button>
-                                    <Button
-                                      color="primary"
-                                      onClick={() =>
-                                        handleGiveRating(
-                                          lowBudgetBooking._id,
-                                          lowBudgetBooking.hotelId,
-                                          "hotel",
-                                          lowBudgetBooking.budgetType
-                                        )
-                                      }
-                                      className="ml-2"
-                                    >
-                                      Rate Hotel
-                                    </Button>
-                                  </div>
-                                </CardBody>
-                              </Card>
-                            </Col>
-                          ))}
+                                      )}
+                                    </div>
+                                    <div className="card-buttons">
+                                      <Button
+                                        color="danger"
+                                        onClick={() =>
+                                          handleCancelOrder(
+                                            lowBudgetBooking._id,
+                                            lowBudgetBooking.uptrip.date
+                                          )
+                                        }
+                                      >
+                                        Cancel Order
+                                      </Button>
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            lowBudgetBooking._id,
+                                            lowBudgetBooking.tourId,
+                                            "tour",
+                                            lowBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Tour
+                                      </Button>
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            lowBudgetBooking._id,
+                                            lowBudgetBooking.hotelId,
+                                            "hotel",
+                                            lowBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Hotel
+                                      </Button>
+                                    </div>
+                                  </CardBody>
+                                </Card>
+                              </Col>
+                            ))}
                         </Row>
                       </React.Fragment>
                     )}
@@ -324,139 +370,186 @@ const Bookinginfo = () => {
                       <React.Fragment>
                         <h4>Mid Budget Bookings</h4>
                         <Row>
-                          {booking.midBudgetBookings.slice().reverse().map((midBudgetBooking) => (
-                            <Col
-                              key={midBudgetBooking._id}
-                              sm="12"
-                              className="mb-4"
-                            >
-                              <Card className="card">
-                                <Row className="p-2">
-                                  <Col>
-                                    <CardImg
-                                      top
-                                      width="100%"
-                                      src={midBudgetBooking.tourImages[0]}
-                                      alt={midBudgetBooking.tourName}
-                                      style={{
-                                        width: "150px",
-                                        height: "150px",
-                                        // borderRadius: "50%",
-                                        margin: "15px auto",
-                                        objectFit: "cover",
-                                      }}
-                                    />
-                                  </Col>
-                                  <Col className="p-4">
-                                    <h2> {midBudgetBooking.tourName}</h2>
-                                    <h4>{midBudgetBooking.hotelName}</h4>
-                                  </Col>
-                                </Row>
-                                <CardBody className="card-body">
-                                  <p>
-                                    Booking Date:{" "}
-                                    {new Date(
-                                      midBudgetBooking.bookingDates.start
-                                    ).toDateString()}{" "}
-                                    to{" "}
-                                    {new Date(
-                                      midBudgetBooking.bookingDates.end
-                                    ).toDateString()}
-                                  </p>
-                                  <p>
-                                    Total Price: {midBudgetBooking.totalPrice}, 4-star hotels, AC Bus
-                                  </p>
-                                  <div className="updown-trip">
-                                    <h5 className="mb-10">Uptrip</h5>
-                                    <div>
-                                      Source: {midBudgetBooking.uptrip.source},
-                                      Time: {midBudgetBooking.uptrip.time},
-                                      Date:{" "}
+                          {booking.midBudgetBookings
+                            .slice()
+                            .reverse()
+                            .map((midBudgetBooking) => (
+                              <Col
+                                key={midBudgetBooking._id}
+                                sm="12"
+                                className="mb-4"
+                              >
+                                <Card className="card">
+                                  <Row className="p-2">
+                                    <Col>
+                                      <CardImg
+                                        top
+                                        width="100%"
+                                        src={midBudgetBooking.tourImages[0]}
+                                        alt={midBudgetBooking.tourName}
+                                        style={{
+                                          width: "150px",
+                                          height: "150px",
+                                          // borderRadius: "50%",
+                                          margin: "15px auto",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </Col>
+                                    <Col className="p-4">
+                                      <h2> {midBudgetBooking.tourName}</h2>
+                                      <h4>{midBudgetBooking.hotelName}</h4>
+                                    </Col>
+                                  </Row>
+                                  <CardBody className="card-body">
+                                    <p>
+                                      Booking Date:{" "}
                                       {new Date(
-                                        midBudgetBooking.uptrip.date
-                                      ).toDateString()}
-                                      , Total Persons:{" "}
-                                      {midBudgetBooking.uptrip.totalPersons}
-                                    </div>
-                                  </div>
-                                  <div className="updown-trip">
-                                    <h5>Downtrip</h5>
-                                    <div>
-                                      Source: {midBudgetBooking.downtrip.source}
-                                      , Time: {midBudgetBooking.downtrip.time},
-                                      Date:{" "}
-                                      {new Date(
-                                        midBudgetBooking.downtrip.date
-                                      ).toDateString()}
-                                      , Total Persons: Total Persons:{" "}
-                                      {midBudgetBooking.downtrip.totalPersons}
-                                    </div>
-                                  </div>
-                                  <div className="bedroom-details">
-                                    <h5>Bedroom Details</h5>
-                                    {midBudgetBooking.singleBedRooms.map(
-                                      (singleBedroom) => (
-                                        <p key={singleBedroom._id}>
-                                          Single Bedroom - Number:{" "}
-                                          {singleBedroom.number},
-                                        </p>
-                                      )
-                                    )}
-                                    {midBudgetBooking.doubleBedRooms.map(
-                                      (doubleBedroom) => (
-                                        <p key={doubleBedroom._id}>
-                                          Double Bedroom - Number:{" "}
-                                          {doubleBedroom.number},
-                                        </p>
-                                      )
-                                    )}
-                                  </div>
-                                  <div className="card-buttons">
-                                    <Button
-                                      color="danger"
-                                      onClick={() =>
-                                        handleCancelOrder(
-                                          midBudgetBooking._id,
-                                          midBudgetBooking.uptrip.date
+                                        new Date(
+                                          midBudgetBooking.bookingDates.end
+                                        ).setDate(
+                                          new Date(
+                                            midBudgetBooking.bookingDates.end
+                                          ).getDate() - 1
                                         )
-                                      }
-                                    >
-                                      Cancel Order
-                                    </Button>
+                                      ).toDateString()}{" "}
+                                      to{" "}
+                                      {new Date(
+                                        new Date(
+                                          midBudgetBooking.bookingDates.end
+                                        ).setDate(
+                                          new Date(
+                                            midBudgetBooking.bookingDates.end
+                                          ).getDate() - 1
+                                        )
+                                      ).toDateString()}
+                                    </p>
+                                    <p>
+                                      Total Price: {midBudgetBooking.totalPrice}
+                                      , 4-star hotels, AC Bus
+                                    </p>
+                                    <div className="updown-trip">
+                                      <h5 className="mb-10">Uptrip</h5>
+                                      <div>
+                                        Source: {midBudgetBooking.uptrip.source}
+                                        , Time: {midBudgetBooking.uptrip.time},
+                                        Date:{" "}
+                                        {new Date(
+                                          new Date(
+                                            midBudgetBooking.uptrip.date
+                                          ).setDate(
+                                            new Date(
+                                              midBudgetBooking.uptrip.date
+                                            ).getDate() - 1
+                                          )
+                                        ).toDateString()}
+                                        , Total Persons:{" "}
+                                        {midBudgetBooking.uptrip.totalPersons}
+                                      </div>
+                                    </div>
+                                    <div className="updown-trip">
+                                      <h5>Downtrip</h5>
+                                      <div>
+                                        Source:{" "}
+                                        {midBudgetBooking.downtrip.source},
+                                        Time: {midBudgetBooking.downtrip.time},
+                                        Date:{" "}
+                                        {new Date(
+                                          new Date(
+                                            midBudgetBooking.downtrip.date
+                                          ).setDate(
+                                            new Date(
+                                              midBudgetBooking.downtrip.date
+                                            ).getDate() - 1
+                                          )
+                                        ).toDateString()}
+                                        , Total Persons: Total Persons:{" "}
+                                        {midBudgetBooking.downtrip.totalPersons}
+                                      </div>
+                                    </div>
+                                    <div className="bedroom-details">
+                                      <h5>Bedroom Details</h5>
+                                      {midBudgetBooking.singleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Single Bedroom - Numbers:{" "}
+                                          {midBudgetBooking.singleBedRooms.map(
+                                            (singleBedroom, index) =>
+                                              `${singleBedroom.number}${
+                                                index !==
+                                                midBudgetBooking.singleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
+                                        </p>
+                                      )}
+                                      {midBudgetBooking.doubleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Double Bedroom - Numbers:{" "}
+                                          {midBudgetBooking.doubleBedRooms.map(
+                                            (doubleBedroom, index) =>
+                                              `${doubleBedroom.number}${
+                                                index !==
+                                                midBudgetBooking.doubleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
+                                        </p>
+                                      )}
+                                    </div>
+                                    <div className="card-buttons">
+                                      <Button
+                                        color="danger"
+                                        onClick={() =>
+                                          handleCancelOrder(
+                                            midBudgetBooking._id,
+                                            midBudgetBooking.uptrip.date
+                                          )
+                                        }
+                                      >
+                                        Cancel Order
+                                      </Button>
 
-                                    <Button
-                                      color="primary"
-                                      onClick={() =>
-                                        handleGiveRating(
-                                          midBudgetBooking._id,
-                                          midBudgetBooking.tourId,
-                                          "tour",
-                                          midBudgetBooking.budgetType
-                                        )
-                                      }
-                                      className="ml-2"
-                                    >
-                                      Rate Tour
-                                    </Button>
-                                    <Button
-                                      color="primary"
-                                      onClick={() =>
-                                        handleGiveRating(
-                                          midBudgetBooking._id,
-                                          midBudgetBooking.hotelId,
-                                          "hotel",
-                                          midBudgetBooking.budgetType
-                                        )
-                                      }
-                                      className="ml-2"
-                                    >
-                                      Rate Hotel
-                                    </Button>
-                                  </div>
-                                </CardBody>
-                              </Card>
-                            </Col>
-                          ))}
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            midBudgetBooking._id,
+                                            midBudgetBooking.tourId,
+                                            "tour",
+                                            midBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Tour
+                                      </Button>
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            midBudgetBooking._id,
+                                            midBudgetBooking.hotelId,
+                                            "hotel",
+                                            midBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Hotel
+                                      </Button>
+                                    </div>
+                                  </CardBody>
+                                </Card>
+                              </Col>
+                            ))}
                         </Row>
                       </React.Fragment>
                     )}
@@ -466,8 +559,10 @@ const Bookinginfo = () => {
                       <React.Fragment>
                         <h4>High Budget Bookings</h4>
                         <Row>
-                          {booking.highBudgetBookings.slice().reverse().map(
-                            (highBudgetBooking) => (
+                          {booking.highBudgetBookings
+                            .slice()
+                            .reverse()
+                            .map((highBudgetBooking) => (
                               <Col
                                 key={highBudgetBooking._id}
                                 sm="12"
@@ -499,16 +594,29 @@ const Bookinginfo = () => {
                                     <p>
                                       Booking Date:{" "}
                                       {new Date(
-                                        highBudgetBooking.bookingDates.start
+                                        new Date(
+                                          highBudgetBooking.bookingDates.end
+                                        ).setDate(
+                                          new Date(
+                                            highBudgetBooking.bookingDates.end
+                                          ).getDate() - 1
+                                        )
                                       ).toDateString()}{" "}
                                       to{" "}
                                       {new Date(
-                                        highBudgetBooking.bookingDates.end
+                                        new Date(
+                                          highBudgetBooking.bookingDates.end
+                                        ).setDate(
+                                          new Date(
+                                            highBudgetBooking.bookingDates.end
+                                          ).getDate() - 1
+                                        )
                                       ).toDateString()}
                                     </p>
                                     <p>
                                       Total Price:{" "}
-                                      {highBudgetBooking.totalPrice}, 4-star hotels, AC Bus
+                                      {highBudgetBooking.totalPrice}, 5-star
+                                      hotels, Special AC Bus
                                     </p>
                                     <div className="updown-trip">
                                       <h5 className="mb-10">Uptrip</h5>
@@ -517,7 +625,13 @@ const Bookinginfo = () => {
                                         {highBudgetBooking.uptrip.source}, Time:{" "}
                                         {highBudgetBooking.uptrip.time}, Date:{" "}
                                         {new Date(
-                                          highBudgetBooking.uptrip.date
+                                          new Date(
+                                            highBudgetBooking.uptrip.date
+                                          ).setDate(
+                                            new Date(
+                                              highBudgetBooking.uptrip.date
+                                            ).getDate() - 1
+                                          )
                                         ).toDateString()}
                                         , Total Persons: , Total Persons:{" "}
                                         {highBudgetBooking.uptrip.totalPersons}
@@ -531,9 +645,15 @@ const Bookinginfo = () => {
                                         Time: {highBudgetBooking.downtrip.time},
                                         Date:{" "}
                                         {new Date(
-                                          highBudgetBooking.downtrip.date
-                                        ).toDateString()}, 
-                                        Total Persons:{" "}
+                                          new Date(
+                                            highBudgetBooking.downtrip.date
+                                          ).setDate(
+                                            new Date(
+                                              highBudgetBooking.downtrip.date
+                                            ).getDate() - 1
+                                          )
+                                        ).toDateString()}
+                                        , Total Persons:{" "}
                                         {
                                           highBudgetBooking.downtrip
                                             .totalPersons
@@ -542,21 +662,39 @@ const Bookinginfo = () => {
                                     </div>
                                     <div className="bedroom-details">
                                       <h5>Bedroom Details</h5>
-                                      {highBudgetBooking.singleBedRooms.map(
-                                        (singleBedroom) => (
-                                          <p key={singleBedroom._id}>
-                                            Single Bedroom - Number:{" "}
-                                            {singleBedroom.number},
-                                          </p>
-                                        )
+                                      {highBudgetBooking.singleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Single Bedroom - Numbers:{" "}
+                                          {highBudgetBooking.singleBedRooms.map(
+                                            (singleBedroom, index) =>
+                                              `${singleBedroom.number}${
+                                                index !==
+                                                highBudgetBooking.singleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
+                                        </p>
                                       )}
-                                      {highBudgetBooking.doubleBedRooms.map(
-                                        (doubleBedroom) => (
-                                          <p key={doubleBedroom._id}>
-                                            Double Bedroom - Number:{" "}
-                                            {doubleBedroom.number},
-                                          </p>
-                                        )
+                                      {highBudgetBooking.doubleBedRooms.length >
+                                        0 && (
+                                        <p>
+                                          Double Bedroom - Numbers:{" "}
+                                          {highBudgetBooking.doubleBedRooms.map(
+                                            (doubleBedroom, index) =>
+                                              `${doubleBedroom.number}${
+                                                index !==
+                                                highBudgetBooking.doubleBedRooms
+                                                  .length -
+                                                  1
+                                                  ? ","
+                                                  : ""
+                                              }`
+                                          )}
+                                        </p>
                                       )}
                                     </div>
                                     <div className="card-buttons">
@@ -604,8 +742,7 @@ const Bookinginfo = () => {
                                   </CardBody>
                                 </Card>
                               </Col>
-                            )
-                          )}
+                            ))}
                         </Row>
                       </React.Fragment>
                     )}

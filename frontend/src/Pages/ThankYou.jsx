@@ -35,7 +35,7 @@ const ThankYou = () => {
         </Row>
 
         <Row className="mt-4">
-        <Col lg="12" className="d-flex justify-content-center">
+          <Col lg="12" className="d-flex justify-content-center">
             <Card className="tour-card">
               <CardBody>
                 <CardTitle tag="h5" className="card-title text-center">
@@ -53,26 +53,51 @@ const ThankYou = () => {
                 <p className="card-text">Hotel: {bookingData.hotelName}</p>
                 <p className="card-text">
                   Uptrip Date:{" "}
-                  {new Date(bookingData.uptrip.date).toLocaleDateString()}
+                  {/* {new Date(bookingData.uptrip.date).toLocaleDateString()} */}
+                  {new Date(
+                    new Date(bookingData.uptrip.date).setDate(
+                      new Date(bookingData.uptrip.date).getDate() - 1
+                    )
+                  ).toDateString()}
                 </p>
                 <p className="card-text">
                   Downtrip Date:{" "}
-                  {new Date(bookingData.downtrip.date).toLocaleDateString()}
+                  {/* {new Date(bookingData.downtrip.date).toLocaleDateString()} */}
+                  {new Date(
+                    new Date(bookingData.downtrip.date).setDate(
+                      new Date(bookingData.downtrip.date).getDate() - 1
+                    )
+                  ).toDateString()}
                 </p>
-                <p className="card-text">Total Persons: {bookingData.uptrip.totalPersons}</p>
+                <p className="card-text">
+                  Total Persons: {bookingData.uptrip.totalPersons}
+                </p>
                 <p className="card-text">
                   Booking Period:{" "}
-                  {`${new Date(
+                  {/* {`${new Date(
                     bookingData.bookingDates.start
                   ).toLocaleDateString()} to ${new Date(
                     bookingData.bookingDates.end
-                  ).toLocaleDateString()}`}
+                  ).toLocaleDateString()}`} */}
+                  {`${new Date(
+                    new Date(bookingData.bookingDates.start).setDate(
+                      new Date(bookingData.bookingDates.start).getDate() - 1
+                    )
+                  ).toDateString()} to ${new Date(
+                    new Date(bookingData.bookingDates.end).setDate(
+                      new Date(bookingData.bookingDates.end).getDate() - 1
+                    )
+                  ).toDateString()} `}
                 </p>
-                <p className="card-text">Total Price: ${bookingData.totalPrice}</p>
+                <p className="card-text">
+                  Total Price: ${bookingData.totalPrice}
+                </p>
                 <p className="card-text">
                   Tour Guide: {bookingData.tourGuide ? "Yes" : "No"}
                 </p>
-                <p className="card-text">Budget Type: {bookingData.budgetType}</p>
+                <p className="card-text">
+                  Budget Type: {bookingData.budgetType}
+                </p>
               </CardBody>
             </Card>
           </Col>

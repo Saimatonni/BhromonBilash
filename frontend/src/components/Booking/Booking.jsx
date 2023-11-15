@@ -106,12 +106,28 @@ const Booking = () => {
 
   const handleUptripDateChange = (e) => {
     const formattedDate = formatDate(e.target.value);
-    setUptripDate(e.target.value);
+    // setUptripDate(e.target.value);
+    const selectedStartDate = new Date(e.target.value);
+    const bookingStartDate = new Date(bookingInfo.startBookingDate);
+  
+    if (selectedStartDate > bookingStartDate) {
+      alert("Uptrip date cannot be later than the booking date.");
+    } else{
+      setUptripDate(e.target.value);
+    }
   };
 
   const handleDowntripDateChange = (e) => {
     const formattedDate = formatDate(e.target.value);
+    // setDowntripDate(e.target.value);
+    const selectedEndDate = new Date(e.target.value);
+  const bookingEndDate = new Date(bookingInfo.endBookingDate);
+
+  if (selectedEndDate < bookingEndDate) {
+    alert("Downtrip date cannot be earlier than the booking end date.");
+  } else {
     setDowntripDate(e.target.value);
+  }
   };
 
   const [bookingStartDate, setBookingStartDate] = useState("");
@@ -213,7 +229,7 @@ const Booking = () => {
 
   const calculateTourGuidePrice = () => {
     if (isTourGuideSelected && bookingInfo.tourGuidePrice) {
-      return tourGuideDay * bookingInfo.tourGuidePrice;
+      return calculateTotalDays() * bookingInfo.tourGuidePrice;
     }
     return 0;
   };
@@ -244,8 +260,14 @@ const Booking = () => {
   useEffect(() => {
     const locationState = location.state;
     if (locationState && locationState.bookingInfo) {
-      setBookingInfo(locationState.bookingInfo);
-      console.log("locaton booking 2",locationState.bookingInfo)
+      // setBookingInfo(locationState.bookingInfo);
+      setBookingInfo((prevBookingInfo) => ({
+        ...prevBookingInfo,
+        startBookingDate: locationState.bookingInfo.startBookingDate,
+        endBookingDate: locationState.bookingInfo.endBookingDate,
+
+      }));
+      
     }
   }, [location.state, setBookingInfo]);
 
@@ -544,7 +566,7 @@ const Booking = () => {
                   {calculateTotalDays()} day <i class="ri-add-line"></i> Extra
                   Price {bookingInfo.seahillingSingleExtraPrice * calculateTotalDays() }{" "}
                   <i class="ri-subtract-line"></i>{" "}
-                  {bookingInfo.singleBedDiscountAmount * calculateTotalDays() + bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays()} discount
+                  {(bookingInfo.singleBedDiscountAmount * calculateTotalDays() + bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays()).toFixed(2)} discount
                 </h5>
                 <span>
                   {bookingInfo.singleBedPrice *
@@ -575,7 +597,7 @@ const Booking = () => {
                   {calculateTotalDays()} day <i class="ri-add-line"></i> Extra
                   Price {bookingInfo.seahillingDoubleExtraPrice * calculateTotalDays() }{" "}
                   <i class="ri-subtract-line"></i>{" "}
-                  {bookingInfo.doubleBedDiscountAmount *  calculateTotalDays() + bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays() } discount
+                  {(bookingInfo.doubleBedDiscountAmount *  calculateTotalDays() + bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays()).toFixed(2) } discount
                 </h5>
                 <span>
                   {bookingInfo.doubleBedPrice *

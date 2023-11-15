@@ -29,7 +29,7 @@ const UserProfile = () => {
   const { accessToken, logout } = useAuth();
   const { userData } = useApi();
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("BookingInfo");
+  const [activeSection, setActiveSection] = useState("ChangePassword");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
   // const {
