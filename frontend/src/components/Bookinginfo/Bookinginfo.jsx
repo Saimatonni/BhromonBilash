@@ -26,7 +26,7 @@ const Bookinginfo = () => {
   //   } = useFetch("http://localhost:3000/api/booking", {
   //     accessToken: accessToken,
   //   });
-
+   console.log("acces",accessToken)
   const [bookingList, setBookingList] = useState(null);
   const {
     data: initialbookingList,
@@ -46,10 +46,14 @@ const Bookinginfo = () => {
       const currentDate = new Date();
       const allowableCancelDate = new Date(uptripDate);
       allowableCancelDate.setDate(allowableCancelDate.getDate() - 7);
+      // console.log("date cuur",allowableCancelDate, currentDate,  allowableCancelDate.getDate() - 7)
       if (currentDate > allowableCancelDate) {
         alert("Booking cancellation deadline has passed.");
         return;
       }
+
+
+      // console.log("bookingId",bookingId)
 
       const response = await fetch("http://localhost:3000/api/booking", {
         method: "DELETE",
@@ -98,20 +102,20 @@ const Bookinginfo = () => {
       rating: 0,
       review: "",
     });
-    setSelectedBookingBudget(budgetType)
+    setSelectedBookingBudget(budgetType);
     setIsRatingModalOpen(true);
   };
 
-//   console.log("budget",selectedBookingBudget)
+  //   console.log("budget",selectedBookingBudget)
 
-//   const handleRatingSubmit = (bookingId, rating, review, itemId, itemType) => {
-//     console.log(`Rating submitted for booking ${bookingId}: ${rating}`);
-//     console.log(`Review submitted: ${review}`);
-//     console.log(`Item ID: ${itemId}, Item Type: ${itemType}`);
-//     setIsRatingModalOpen(false);
-//   };
+  //   const handleRatingSubmit = (bookingId, rating, review, itemId, itemType) => {
+  //     console.log(`Rating submitted for booking ${bookingId}: ${rating}`);
+  //     console.log(`Review submitted: ${review}`);
+  //     console.log(`Item ID: ${itemId}, Item Type: ${itemType}`);
+  //     setIsRatingModalOpen(false);
+  //   };
 
-const handleRatingSubmit = async (
+  const handleRatingSubmit = async (
     bookingId,
     rating,
     review,
@@ -123,7 +127,7 @@ const handleRatingSubmit = async (
         itemType === "tour"
           ? "/api/rating/tour"
           : `/api/rating/hotel?budgetType=${selectedBookingBudget}`;
-  
+
       const response = await fetch(`http://localhost:3000${url}`, {
         method: "POST",
         headers: {
@@ -137,9 +141,9 @@ const handleRatingSubmit = async (
           [itemType + "Id"]: itemId,
         }),
       });
-  
+
       const result = await response.json();
-  
+
       if (result.success) {
         console.log(`${itemType} Rating posted successfully`);
         // You may want to update the UI or take any other actions after successful rating submission
@@ -151,10 +155,8 @@ const handleRatingSubmit = async (
       console.error("Error posting rating:", error);
     }
   };
-  
-  
 
-//   console.log("bookinglist", bookingList);
+  //   console.log("bookinglist", bookingList);
   const isBookingListEmpty =
     !bookingList ||
     !Array.isArray(bookingList) ||
@@ -169,7 +171,7 @@ const handleRatingSubmit = async (
         <Container>
           <Row>
             {loading && <h4>Loading......</h4>}
-            {error && <h4>{error}</h4>}
+            {/* {error && <h4>{error}</h4>} */}
             {isBookingListEmpty ? (
               <h4></h4>
             ) : (
@@ -181,7 +183,7 @@ const handleRatingSubmit = async (
                       <React.Fragment>
                         <h4>Low Budget Bookings</h4>
                         <Row>
-                          {booking.lowBudgetBookings.map((lowBudgetBooking) => (
+                          {booking.lowBudgetBookings.slice().reverse().map((lowBudgetBooking) => (
                             <Col
                               key={lowBudgetBooking._id}
                               sm="12"
@@ -221,14 +223,18 @@ const handleRatingSubmit = async (
                                     ).toDateString()}
                                   </p>
                                   <p>
-                                    Total Price: {lowBudgetBooking.totalPrice}
+                                    Total Price: {lowBudgetBooking.totalPrice},  3-star hotels, Non-AC Bus
                                   </p>
                                   <div className="updown-trip">
                                     <h5 className="mb-10">Uptrip</h5>
                                     <div>
                                       Source: {lowBudgetBooking.uptrip.source},
                                       Time: {lowBudgetBooking.uptrip.time},
-                                      Total Persons:{" "}
+                                      Date:{" "}
+                                      {new Date(
+                                        lowBudgetBooking.uptrip.date
+                                      ).toDateString()}
+                                      , Total Persons:{" "}
                                       {lowBudgetBooking.uptrip.totalPersons}
                                     </div>
                                   </div>
@@ -237,7 +243,11 @@ const handleRatingSubmit = async (
                                     <div>
                                       Source: {lowBudgetBooking.downtrip.source}
                                       , Time: {lowBudgetBooking.downtrip.time},
-                                      Total Persons:{" "}
+                                      Date:{" "}
+                                      {new Date(
+                                        lowBudgetBooking.downtrip.date
+                                      ).toDateString()}
+                                      , Total Persons:{" "}
                                       {lowBudgetBooking.downtrip.totalPersons}
                                     </div>
                                   </div>
@@ -314,7 +324,7 @@ const handleRatingSubmit = async (
                       <React.Fragment>
                         <h4>Mid Budget Bookings</h4>
                         <Row>
-                          {booking.midBudgetBookings.map((midBudgetBooking) => (
+                          {booking.midBudgetBookings.slice().reverse().map((midBudgetBooking) => (
                             <Col
                               key={midBudgetBooking._id}
                               sm="12"
@@ -354,14 +364,18 @@ const handleRatingSubmit = async (
                                     ).toDateString()}
                                   </p>
                                   <p>
-                                    Total Price: {midBudgetBooking.totalPrice}
+                                    Total Price: {midBudgetBooking.totalPrice}, 4-star hotels, AC Bus
                                   </p>
                                   <div className="updown-trip">
                                     <h5 className="mb-10">Uptrip</h5>
                                     <div>
                                       Source: {midBudgetBooking.uptrip.source},
                                       Time: {midBudgetBooking.uptrip.time},
-                                      Total Persons:{" "}
+                                      Date:{" "}
+                                      {new Date(
+                                        midBudgetBooking.uptrip.date
+                                      ).toDateString()}
+                                      , Total Persons:{" "}
                                       {midBudgetBooking.uptrip.totalPersons}
                                     </div>
                                   </div>
@@ -370,7 +384,11 @@ const handleRatingSubmit = async (
                                     <div>
                                       Source: {midBudgetBooking.downtrip.source}
                                       , Time: {midBudgetBooking.downtrip.time},
-                                      Total Persons:{" "}
+                                      Date:{" "}
+                                      {new Date(
+                                        midBudgetBooking.downtrip.date
+                                      ).toDateString()}
+                                      , Total Persons: Total Persons:{" "}
                                       {midBudgetBooking.downtrip.totalPersons}
                                     </div>
                                   </div>
@@ -405,36 +423,35 @@ const handleRatingSubmit = async (
                                     >
                                       Cancel Order
                                     </Button>
-                                    <div className="">
-                                      <Button
-                                        color="primary"
-                                        onClick={() =>
-                                          handleGiveRating(
-                                            midBudgetBooking._id,
-                                            midBudgetBooking.tourId,
-                                            "tour",
-                                            midBudgetBooking.budgetType
-                                          )
-                                        }
-                                        className="ml-2"
-                                      >
-                                        Rate Tour
-                                      </Button>
-                                      <Button
-                                        color="primary"
-                                        onClick={() =>
-                                          handleGiveRating(
-                                            midBudgetBooking._id,
-                                            midBudgetBooking.hotelId,
-                                            "hotel",
-                                            midBudgetBooking.budgetType
-                                          )
-                                        }
-                                        className="ml-2"
-                                      >
-                                        Rate Hotel
-                                      </Button>
-                                    </div>
+
+                                    <Button
+                                      color="primary"
+                                      onClick={() =>
+                                        handleGiveRating(
+                                          midBudgetBooking._id,
+                                          midBudgetBooking.tourId,
+                                          "tour",
+                                          midBudgetBooking.budgetType
+                                        )
+                                      }
+                                      className="ml-2"
+                                    >
+                                      Rate Tour
+                                    </Button>
+                                    <Button
+                                      color="primary"
+                                      onClick={() =>
+                                        handleGiveRating(
+                                          midBudgetBooking._id,
+                                          midBudgetBooking.hotelId,
+                                          "hotel",
+                                          midBudgetBooking.budgetType
+                                        )
+                                      }
+                                      className="ml-2"
+                                    >
+                                      Rate Hotel
+                                    </Button>
                                   </div>
                                 </CardBody>
                               </Card>
@@ -449,7 +466,7 @@ const handleRatingSubmit = async (
                       <React.Fragment>
                         <h4>High Budget Bookings</h4>
                         <Row>
-                          {booking.highBudgetBookings.map(
+                          {booking.highBudgetBookings.slice().reverse().map(
                             (highBudgetBooking) => (
                               <Col
                                 key={highBudgetBooking._id}
@@ -491,15 +508,18 @@ const handleRatingSubmit = async (
                                     </p>
                                     <p>
                                       Total Price:{" "}
-                                      {highBudgetBooking.totalPrice}
+                                      {highBudgetBooking.totalPrice}, 4-star hotels, AC Bus
                                     </p>
                                     <div className="updown-trip">
                                       <h5 className="mb-10">Uptrip</h5>
                                       <div>
                                         Source:{" "}
                                         {highBudgetBooking.uptrip.source}, Time:{" "}
-                                        {highBudgetBooking.uptrip.time}, Total
-                                        Persons:{" "}
+                                        {highBudgetBooking.uptrip.time}, Date:{" "}
+                                        {new Date(
+                                          highBudgetBooking.uptrip.date
+                                        ).toDateString()}
+                                        , Total Persons: , Total Persons:{" "}
                                         {highBudgetBooking.uptrip.totalPersons}
                                       </div>
                                     </div>
@@ -509,6 +529,10 @@ const handleRatingSubmit = async (
                                         Source:{" "}
                                         {highBudgetBooking.downtrip.source},
                                         Time: {highBudgetBooking.downtrip.time},
+                                        Date:{" "}
+                                        {new Date(
+                                          highBudgetBooking.downtrip.date
+                                        ).toDateString()}, 
                                         Total Persons:{" "}
                                         {
                                           highBudgetBooking.downtrip
@@ -547,36 +571,35 @@ const handleRatingSubmit = async (
                                       >
                                         Cancel Order
                                       </Button>
-                                      <div>
-                                        <Button
-                                          color="primary"
-                                          onClick={() =>
-                                            handleGiveRating(
-                                              highBudgetBooking._id,
-                                              highBudgetBooking.tourId,
-                                              "tour",
-                                              highBudgetBooking.budgetType
-                                            )
-                                          }
-                                          className="ml-2"
-                                        >
-                                          Rate Tour
-                                        </Button>
-                                        <Button
-                                          color="primary"
-                                          onClick={() =>
-                                            handleGiveRating(
-                                              highBudgetBooking._id,
-                                              highBudgetBooking.hotelId,
-                                              "hotel",
-                                              highBudgetBooking.budgetType
-                                            )
-                                          }
-                                          className="ml-2"
-                                        >
-                                          Rate Hotel
-                                        </Button>
-                                      </div>
+
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            highBudgetBooking._id,
+                                            highBudgetBooking.tourId,
+                                            "tour",
+                                            highBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Tour
+                                      </Button>
+                                      <Button
+                                        color="primary"
+                                        onClick={() =>
+                                          handleGiveRating(
+                                            highBudgetBooking._id,
+                                            highBudgetBooking.hotelId,
+                                            "hotel",
+                                            highBudgetBooking.budgetType
+                                          )
+                                        }
+                                        className="ml-2"
+                                      >
+                                        Rate Hotel
+                                      </Button>
                                     </div>
                                   </CardBody>
                                 </Card>

@@ -23,9 +23,11 @@ import "../styles/user-profile.css";
 import Bookinginfo from "../components/Bookinginfo/Bookinginfo";
 import ChangePassword from "../components/ChangePassword/ChangePassword";
 import { useNavigate } from "react-router-dom";
+import { useApi } from "../context/ApiContext";
 
 const UserProfile = () => {
   const { accessToken, logout } = useAuth();
+  const { userData } = useApi();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("BookingInfo");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -47,17 +49,17 @@ const UserProfile = () => {
     accessToken: accessToken,
   });
   useEffect(() => {
-    if (initialProfile) {
-      setProfile(initialProfile);
+    if (userData) {
+      setProfile(userData);
     }
-  }, [initialProfile]);
+  }, [userData]);
   // console.log("initialProfile:", initialProfile);
 
   // console.log("pro", profile);
 
   const [editedProfile, setEditedProfile] = useState({
-    name: profile?.name || "",
-    address: profile?.address || "",
+    name: userData?.name || "",
+    address: userData?.address || "",
     imageData: "",
   });
 
@@ -152,14 +154,14 @@ const UserProfile = () => {
   return (
     <section>
       <Container>
-        {loading && <h4>Loading......</h4>}
-        {error && <h4>{error}</h4>}
+        {/* {loading && <h4>Loading......</h4>}
+        {error && <h4>{error}</h4>} */}
         <Row>
           <Col lg="4">
             <Card className="user-profile-card">
               <CardImg
                 top
-                src={profile?.image}
+                src={userData?.image}
                 alt="User Profile Image"
                 style={{
                   width: "150px",
@@ -170,9 +172,9 @@ const UserProfile = () => {
                 }}
               />
               <CardBody>
-                <CardTitle tag="h5">{profile?.name}</CardTitle>
-                <p>Address: {profile?.address}</p>
-                <p>Phone: {profile?.phone}</p>
+                <CardTitle tag="h5">{userData?.name}</CardTitle>
+                <p>Address: {userData?.address}</p>
+                <p>Phone: {userData?.phone}</p>
                 <Button
                   className="edit-profile-button"
                   color="primary"

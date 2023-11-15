@@ -16,6 +16,7 @@ import userIcon from "../assets/images/user.png";
 const Register = () => {
   const navigate = useNavigate();
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [verificationData, setVerificationData] = useState({
     // email: "",
     token: "",
@@ -39,6 +40,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const registrationData = {
       name: credentials.username,
@@ -74,11 +76,14 @@ const Register = () => {
       }
     } catch (error) {
       console.error("An error occurred:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const verificationRequestBody = {
       email: credentials.email,
       token: verificationData.token,
@@ -114,6 +119,8 @@ const Register = () => {
       }
     } catch (error) {
       console.error("An error occurred:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -159,8 +166,9 @@ const Register = () => {
                       <Button
                         className="btn secondary__btn auth__btn"
                         type="submit"
+                        disabled={loading}
                       >
-                        Verify Email
+                        {loading ? "Processing..." : "Verify Email"}
                       </Button>
                     </Form>
                   </>
@@ -216,8 +224,9 @@ const Register = () => {
                       <Button
                         className="btn secondary__btn auth__btn"
                         type="submit"
+                        disabled={loading}
                       >
-                        Register
+                        {loading ? "Processing..." : "Register"}
                       </Button>
                     </Form>
                     <p>

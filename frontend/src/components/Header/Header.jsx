@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import useFetch from "../../hooks/useFetch";
 import NotificationPanel from "../Notification/Notification";
 import { useApi } from "../../context/ApiContext";
+import { useNavigate } from "react-router-dom";
 
 const nav_Link = [
   {
@@ -26,6 +27,7 @@ const nav_Link = [
 const Header = () => {
   const { accessToken, logout,  isAuthenticated } = useAuth();
   const { userData } = useApi();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   // const { data: profile, loading, error } = useFetch('http://localhost:3000/api/profile');
   // const {
@@ -65,6 +67,7 @@ const Header = () => {
   const isLoggedIn = !!accessToken;
   const handleLogout = () => {
     logout();
+    navigate('/')
   };
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -74,7 +77,11 @@ const Header = () => {
   ];
 
   const toggleNotificationPanel = () => {
-    setIsNotificationOpen((prev) => !prev);
+    if (userData.subscribed) {
+      setIsNotificationOpen((prev) => !prev);
+    } else {
+      alert("Please subscribe first to get notifications.");
+    }
   };
 
   const closeNotificationPanel = () => {

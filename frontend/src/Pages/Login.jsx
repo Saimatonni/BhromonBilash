@@ -8,7 +8,7 @@ import {
   Button,
   Container,
 } from "reactstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate , useLocation } from "react-router-dom";
 import "../styles/login.css";
 import loginImg from "../assets/images/login.png";
 import userIcon from "../assets/images/user.png";
@@ -16,7 +16,9 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setAccessToken } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [credentials, setCredentials] = useState({
     email: undefined,
     password: undefined,
@@ -26,8 +28,15 @@ const Login = () => {
     setCredentials((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
+  // const locationState = useLocation().state || {};
+  // const redirectTo = locationState.redirectTo || "/";
+  const redirectTo = location.state?.redirectTo || "/";
+  const bookingInfo = location.state?.bookingInfo || {};
+  console.log("redirect",redirectTo)
+
   const handleClick = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("http://localhost:3000/api/auth/login", {
@@ -45,13 +54,16 @@ const Login = () => {
         localStorage.setItem('accessToken', accessToken);
         console.log("acesstoken:", accessToken);
         setAccessToken(accessToken);
-        navigate("/");
+        // navigate(redirectTo);
+        navigate(redirectTo, { state: { bookingInfo: bookingInfo } });
       } else {
         alert("Login failed");
         console.error("Login failed");
       }
     } catch (error) {
       console.error("Error during login:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,7 +133,8 @@ const Login = () => {
         alert("Password reset successful...Login Now")
         console.log("Password reset successful:", data);
         setShowResetPasswordPopup(false);
-        navigate("/login");
+        // navigate("/login");
+        navigate(redirectTo);
       } else {
         console.error("Failed to reset password");
         alert("Failed to reset password");
@@ -168,8 +181,9 @@ const Login = () => {
                   <Button
                     className="btn secondary__btn auth__btn"
                     type="submit"
+                    disabled={loading}
                   >
-                    Login
+                    {loading ? "Processing..." : "Login"}
                   </Button>
                 </Form>
                 <p>

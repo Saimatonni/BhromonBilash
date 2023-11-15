@@ -15,6 +15,7 @@ import { useBookingInfo } from "../context/BookingContext";
 import { useNavigate } from "react-router-dom";
 
 const TourDetailsPage = () => {
+  
   const settings = {
     dots: true,
     infinite: true,

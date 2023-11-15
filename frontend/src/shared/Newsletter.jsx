@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useApi } from "../context/ApiContext";
 
 const Newsletter = () => {
-  const { accessToken, logout } = useAuth();
+  const { accessToken, logout , isAuthenticated} = useAuth();
   const navigate = useNavigate()
   const { userData } = useApi();
   const [profile, setProfile] = useState(null);
@@ -74,17 +74,22 @@ const Newsletter = () => {
                     <input type='email' placeholder='Enter your email'/>
                     <button className='btn newsletter__btn'>Subscribe</button>
                 </div> */}
-              {profile && (
-                <div className="newsletter__input">
-                  <button
-                    className="btn newsletter__btn"
-                    onClick={handleSubscriptionToggle}
-                    disabled={isSubscribing}
-                  >
-                    {isSubscribing ? "Processing..." : profile.subscribed ? "Unsubscribe" : "Subscribe"}
-                  </button>
-                </div>
-              )}
+                 {profile ? (
+                  <div className="newsletter__input">
+                    <button
+                      className="btn newsletter__btn"
+                      onClick={handleSubscriptionToggle}
+                      disabled={isSubscribing}
+                    >
+                      {isSubscribing ? "Processing..." : profile.subscribed ? "Unsubscribe" : "Subscribe"}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="newsletter__input">
+                  {/* <input type='email' placeholder='Enter your email'/> */}
+                  <button className='btn newsletter__btn' onClick={handleSubscriptionToggle}>Subscribe</button>
+              </div>
+                )}
               <p>
                 Visit reputable travel websites and blogs regularly. Many of
                 them offer newsletters that you can subscribe to for updates on

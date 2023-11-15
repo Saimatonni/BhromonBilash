@@ -23,6 +23,19 @@ import "../styles/BudgetTourDetails.css";
 import { useNavigate } from "react-router-dom";
 
 const BudgetTourDetails = () => {
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+      window.location.href = '/tours';
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
   const [pageCount, setPageCount] = useState(0);
   const { bookingInfo, setBookingInfo } = useBookingInfo();
   const { id, budgetType } = useParams();
@@ -158,21 +171,44 @@ const BudgetTourDetails = () => {
 
   const [searchName, setSearchName] = useState("");
   const [searchDistance, setSearchDistance] = useState("");
-const [searchLocation, setSearchLocation] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [searchFacing, setSearchFacing] = useState("all");
+  const [searchDiscount, setSearchDiscount] = useState("all");
   // const filteredHotels = searchName
   //   ? hotelsData?.hotels?.filter((hotel) =>
   //       hotel.name.toLowerCase().includes(searchName.toLowerCase())
   //     )
   //   : hotelsData?.hotels;
 
+  // const filteredHotels =
+  //   hotelsData?.hotels?.filter((hotel) => {
+  //     const nameMatch = hotel.name
+  //       .toLowerCase()
+  //       .includes(searchName.toLowerCase());
+  //     const distanceMatch =
+  //       !searchDistance || hotel.distance <= Number(searchDistance);
+  //     const locationMatch = hotel.address
+  //       .toLowerCase()
+  //       .includes(searchLocation.toLowerCase());
 
-    const filteredHotels = hotelsData?.hotels?.filter((hotel) => {
-      const nameMatch = hotel.name.toLowerCase().includes(searchName.toLowerCase());
-      const distanceMatch = !searchDistance || hotel.distance <= Number(searchDistance);
-      const locationMatch = hotel.address.toLowerCase().includes(searchLocation.toLowerCase());
-    
-      return nameMatch && distanceMatch && locationMatch;
-    }) || hotelsData?.hotels;
+  //     return nameMatch && distanceMatch && locationMatch;
+  //   }) || hotelsData?.hotels;
+
+  // console.log("faching",searchFacing)
+
+  const filteredHotels =
+  hotelsData?.hotels?.filter((hotel) => {
+    const nameMatch = hotel.name.toLowerCase().includes(searchName.toLowerCase());
+    const distanceMatch = !searchDistance || hotel.distance <= Number(searchDistance);
+    const locationMatch = hotel.address.toLowerCase().includes(searchLocation.toLowerCase());
+    const facingMatch =
+      searchFacing === "sea" ? hotel.isSeaFacing : searchFacing === "hill" ? hotel.isHillFacing : true;
+    const discountMatch =
+      searchDiscount === "all" || (searchDiscount === "discount" && hotel.discount.length > 0);
+
+    return nameMatch && distanceMatch && locationMatch && facingMatch && discountMatch;
+  }) || hotelsData?.hotels;
+
 
   return (
     <>
@@ -204,14 +240,50 @@ const [searchLocation, setSearchLocation] = useState("");
                       <div>
                         <h6>Distance</h6>
                         <input
-                        type="number"
-                        placeholder="Distance k/m"
-                        value={searchDistance}
-                        onChange={(e) => setSearchDistance(e.target.value)}
-                      />
+                          type="number"
+                          placeholder="Distance k/m"
+                          value={searchDistance}
+                          onChange={(e) => setSearchDistance(e.target.value)}
+                        />
                       </div>
                     </FormGroup>
                     <FormGroup className="d-flex gap-3 form__group form__group-last">
+                      <i class="ri-search-eye-line"></i>
+                      <div>
+                        <h6>Facing</h6>
+                        <Input
+                          type="select"
+                          value={searchFacing}
+                          onChange={(e) => setSearchFacing(e.target.value)}
+                          style={{ outline: "none !important", marginTop: "10px" }}
+                        >
+                          <option value="all">
+                            All
+                          </option>
+                          <option value="sea">Sea Facing</option>
+                          <option value="hill">Hill Facing</option>
+                        </Input>
+                      </div>
+                    </FormGroup>
+                    <FormGroup className="d-flex gap-3 form__group form__group-last">
+                    <i class="ri-gift-line"></i>
+                      <div>
+                        <h6>Discount</h6>
+                        <Input
+                          type="select"
+                          value={searchDiscount}
+                          onChange={(e) => setSearchDiscount(e.target.value)}
+                          style={{ outline: "none", marginTop: "10px" }}
+                        >
+                           {/* <option value="" disabled>
+                            Discount
+                          </option> */}
+                          <option value="all">All</option>
+                          <option value="discount">Discount</option>
+                        </Input>
+                      </div>
+                    </FormGroup>
+                    {/* <FormGroup className="d-flex gap-3 form__group form__group-last">
                       <i class="ri-map-pin-line"></i>
                       <div>
                         <h6>Address</h6>
@@ -222,74 +294,79 @@ const [searchLocation, setSearchLocation] = useState("");
                         onChange={(e) => setSearchLocation(e.target.value)}
                       />
                       </div>
-                    </FormGroup>
+                    </FormGroup> */}
                   </Form>
                 </div>
+                <h2 className="text-center" style={{ marginTop: "40px" }}>
+                  {budgetType === "LOW"
+                    ? "Non-AC Bus Service"
+                    : "AC Bus Service"}
+                </h2>
                 {filteredHotels.length > 0 ? (
-                <Row>
-                  {/* {hotelsData?.hotels?.map((hotel) => ( */}
-                  {filteredHotels?.map((hotel) => (
-                    <Col lg="4" key={hotel._id}>
-                      {/* <Link to={`/room/${hotel._id}/${budgetType}`}/> */}
-                      <Card
-                        className={`hotel-card ${
-                          isHotelSelected(hotel._id) ? "selected" : ""
-                        }`}
-                        onClick={() => handleCardClick(hotel._id)}
-                      >
-                        <div className="card-image-container">
-                          <Card>
-                            <img
-                              src={hotel.image}
-                              alt={hotel.name}
-                              className="hotel-image"
-                            />
-                            <CardBody>
-                              <p>
-                                <h5 className="hotel-title">
-                                  {hotel.name}
-                                  {hotel.discount &&
-                                    hotel.discount.length > 0 && (
-                                      <span className="discount-badge">
-                                        {hotel.discount[0].amount}% off{" "}
-                                        {hotel.discount[0].to}
-                                      </span>
-                                    )}
-                                </h5>
+                  <Row>
+                    {/* {hotelsData?.hotels?.map((hotel) => ( */}
+                    {filteredHotels?.map((hotel) => (
+                      <Col lg="4" key={hotel._id}>
+                        {/* <Link to={`/room/${hotel._id}/${budgetType}`}/> */}
+                        <Card
+                          className={`hotel-card ${
+                            isHotelSelected(hotel._id) ? "selected" : ""
+                          }`}
+                          onClick={() => handleCardClick(hotel._id)}
+                        >
+                          <div className="card-image-container">
+                            <Card>
+                              <img
+                                src={hotel.image}
+                                alt={hotel.name}
+                                className="hotel-image"
+                              />
+                              <CardBody>
+                                <p>
+                                  <h5 className="hotel-title">
+                                    {hotel.name}
+                                    {hotel.discount &&
+                                      hotel.discount.length > 0 && (
+                                        <span className="discount-badge">
+                                          {hotel.discount[0].amount}% off{" "}
+                                          {hotel.discount[0].to}
+                                        </span>
+                                      )}
+                                  </h5>
+                                </p>
+                                <p className="hotel-address">{hotel.address}</p>
+                              </CardBody>
+                            </Card>
+                            <CardBody className="card-body-info">
+                              <h5 className="hotel-title">{hotel.name}</h5>
+                              <p className="hotel-description">
+                                {hotel.description}
                               </p>
-                              <p className="hotel-address">{hotel.address}</p>
-                            </CardBody>
-                          </Card>
-                          <CardBody className="card-body-info">
-                            <h5 className="hotel-title">{hotel.name}</h5>
-                            <p className="hotel-description">
-                              {hotel.description}
-                            </p>
-                            <p className="hotel-details">
-                              Address: {hotel.address}
-                            </p>
-                            <p className="hotel-details">
-                              Single Bed Price: ${hotel.singleBedPrice}
-                            </p>
-                            <p className="hotel-details">
-                              Double Bed Price: ${hotel.doubleBedPrice}
-                            </p>
-                            {hotel.isSeaFacing && (
-                              <p className="sea-facing-details">
-                                Sea Facing Extra Price: $
-                                {hotel.seaFacingExtraPrice}
+                              <p className="hotel-details">
+                                Address: {hotel.address}
                               </p>
-                            )}
-                            {hotel.isHillFacing && (
-                              <p className="hill-facing-details">
-                                Hill Facing Extra Price: $
-                                {hotel.hillFacingExtraPrice}
+                              <p className="hotel-details">
+                                Single Bed Price: ${hotel.singleBedPrice}
                               </p>
-                            )}
-                            <p className="hotel-details">
-                              Distance: {hotel.distance} km
-                            </p>
-                            {/* <Button
+                              <p className="hotel-details">
+                                Double Bed Price: ${hotel.doubleBedPrice}
+                              </p>
+                              {hotel.isSeaFacing && (
+                                <p className="sea-facing-details">
+                                  Sea Facing Extra Price: $
+                                  {hotel.seaFacingExtraPrice}
+                                </p>
+                              )}
+                              {hotel.isHillFacing && (
+                                <p className="hill-facing-details">
+                                  Hill Facing Extra Price: $
+                                  {hotel.hillFacingExtraPrice}
+                                </p>
+                              )}
+                              <p className="hotel-details">
+                                Distance: {hotel.distance} km
+                              </p>
+                              {/* <Button
                               className={`book-button mt-2 ml-auto ${
                                 isHotelSelected(hotel._id) ? "selected" : ""
                               }`}
@@ -305,13 +382,13 @@ const [searchLocation, setSearchLocation] = useState("");
                                 ? "Selected Hotel"
                                 : "Select"}
                             </Button> */}
-                          </CardBody>
-                        </div>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-                 ) : (
+                            </CardBody>
+                          </div>
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                ) : (
                   <div className="text-center pt-5">
                     <h4>No Hotels found</h4>
                   </div>

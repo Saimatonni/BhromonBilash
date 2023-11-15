@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import "./booking.css";
 import {
   Form,
@@ -13,9 +13,11 @@ import { useBookingInfo } from "../../context/BookingContext";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Booking = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { accessToken, logout } = useAuth();
   const { id, budgetType } = useParams();
   const { bookingInfo, setBookingInfo } = useBookingInfo();
@@ -38,7 +40,7 @@ const Booking = () => {
   const [selectedSourceup, setSelectedSourceup] = useState("");
   const [selectedTimeup, setSelectedTimeup] = useState("");
   const [selectedSourceChargeup, setSelectedSourceChargeup] = useState(0);
-  const [numberOfPersonsup, setNumberOfPersonsup] = useState(1);
+  const [numberOfPersonsup, setNumberOfPersonsup] = useState();
   const [travelIdUp, setTravelIdUp] = useState("");
 
   const handleSourceChangeup = (e) => {
@@ -66,7 +68,7 @@ const Booking = () => {
   const [selectedSourcedown, setSelectedSourcedown] = useState("");
   const [selectedTimedown, setSelectedTimedown] = useState("");
   const [selectedSourceChargedown, setSelectedSourceChargedown] = useState(0);
-  const [numberOfPersonsdown, setNumberOfPersonsdown] = useState(1);
+  const [numberOfPersonsdown, setNumberOfPersonsdown] = useState();
   const [travelIddown, setTravelIddown] = useState("");
 
   const handleSourceChangedown = (e) => {
@@ -173,9 +175,9 @@ const Booking = () => {
   };
 
   const calculateTotalDays = () => {
-    if (bookingStartDate && bookingEndDate) {
-      const startDate = new Date(bookingStartDate);
-      const endDate = new Date(bookingEndDate);
+    if (bookingInfo.startBookingDate && bookingInfo.endBookingDate) {
+      const startDate = new Date(bookingInfo.startBookingDate);
+      const endDate = new Date(bookingInfo.endBookingDate);
       const timeDifference = endDate.getTime() - startDate.getTime();
       const totalDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
       return totalDays + 1;
@@ -224,13 +226,13 @@ const Booking = () => {
       bookingInfo.singleBedPrice *
         bookingInfo.singleBedCount *
         calculateTotalDays() +
-      bookingInfo.seahillingSingleExtraPrice -
-      bookingInfo.singleBedDiscountAmount * calculateTotalDays() +
+      bookingInfo.seahillingSingleExtraPrice * calculateTotalDays()  - 
+      bookingInfo.singleBedDiscountAmount * calculateTotalDays() - bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays() +
       bookingInfo.doubleBedPrice *
         bookingInfo.doubleBedCount *
         calculateTotalDays() +
-      bookingInfo.seahillingDoubleExtraPrice -
-      bookingInfo.doubleBedDiscountAmount * calculateTotalDays();
+      bookingInfo.seahillingDoubleExtraPrice * calculateTotalDays() -
+      bookingInfo.doubleBedDiscountAmount * calculateTotalDays() - bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays();
 
     const overallTotalPrice =
       uptripPrice + downtripPrice + tourGuidePrice + totalBedPrice;
@@ -239,12 +241,34 @@ const Booking = () => {
   };
 
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const locationState = location.state;
+    if (locationState && locationState.bookingInfo) {
+      setBookingInfo(locationState.bookingInfo);
+      console.log("locaton booking 2",locationState.bookingInfo)
+    }
+  }, [location.state, setBookingInfo]);
 
   const handleClick = async (e) => {
+    // if (!accessToken) {
+    //   navigate("/login");
+    //   return;
+    // }
+
+    // if (!accessToken) {
+    //   navigate("/login", {
+    //     state: { redirectTo: `/room/${id}/${budgetType}` },
+    //   });
+    //   return;
+    // }
+
     if (!accessToken) {
-      navigate("/login");
+      navigate("/login", {
+        state: { redirectTo: `/room/${id}/${budgetType}`, bookingInfo: bookingInfo },
+      });
       return;
     }
+
     setLoading(true);
     e.preventDefault();
     const apiUrl = `http://localhost:3000/api/booking?budgetType=${budgetType}`;
@@ -271,8 +295,8 @@ const Booking = () => {
         singleBedRoomIds: bookingInfo.selectedSingleBedIds,
         doubleBedRoomIds: bookingInfo.selectedDoubleBedIds,
         bookingDates: {
-          start: formatDate(bookingStartDate),
-          end: formatDate(bookingEndDate),
+          start: formatDate(bookingInfo.startBookingDate),
+          end: formatDate(bookingInfo.endBookingDate),
         },
       };
 
@@ -389,8 +413,8 @@ const Booking = () => {
             {/* {selectedSourceup && ( */}
             <h6 className="d-flex align-items-center gap-1 border-1">
               {selectedSourceChargeup} <i className="ri-close-line"></i>{" "}
-              {numberOfPersonsup} person ={" "}
-              {selectedSourceChargeup * numberOfPersonsup}
+              {numberOfPersonsup || 0} person ={" "}
+              {selectedSourceChargeup * numberOfPersonsup || 0}
             </h6>
             {/* )} */}
           </div>
@@ -407,7 +431,7 @@ const Booking = () => {
             <input
               type="Number"
               placeholder="person"
-              id="guestSize"
+              id="person"
               value={numberOfPersonsup}
               onChange={(e) => handleNumberOfPersonsChangeup(e)}
               required
@@ -458,8 +482,8 @@ const Booking = () => {
             {/* {selectedSourcedown && ( */}
             <h6 className="d-flex align-items-center gap-1 border-1">
               {selectedSourceChargedown} <i className="ri-close-line"></i>{" "}
-              {numberOfPersonsdown} person ={" "}
-              {selectedSourceChargedown * numberOfPersonsdown}
+              {numberOfPersonsdown || 0} person ={" "}
+              {selectedSourceChargedown * numberOfPersonsdown || 0}
             </h6>
             {/* )} */}
           </div>
@@ -475,7 +499,7 @@ const Booking = () => {
             <input
               type="Number"
               placeholder="person"
-              id="guestSize"
+              id="person"
               value={numberOfPersonsdown}
               onChange={(e) => handleNumberOfPersonsChangedown(e)}
               required
@@ -487,25 +511,27 @@ const Booking = () => {
         <h5>Total Bed Price :</h5>
         <div className="date-container">
           <h6>Booking Start </h6>
-          <input
+          {/* <input
             type="date"
             placeholder=""
             id="bookStartDate"
             value={bookingStartDate}
             onChange={handleBookingStartDateChange}
             required
-          />
+          /> */}
+          <h6>{bookingInfo.startBookingDate}</h6>
         </div>
         <div className="date-container">
           <h6>Booking End </h6>
-          <input
+          {/* <input
             type="date"
             placeholder=""
             id="bookEndDate"
             value={bookingEndDate}
             onChange={handleBookingEndDateChange}
             required
-          />
+          /> */}
+          <h6>{bookingInfo.endBookingDate}</h6>
         </div>
         <ListGroup>
           <ListGroupItem className="border-0 px-0">
@@ -516,16 +542,16 @@ const Booking = () => {
                   {bookingInfo.singleBedPrice} <i class="ri-close-line"></i>{" "}
                   {bookingInfo.singleBedCount} bed <i class="ri-close-line"></i>{" "}
                   {calculateTotalDays()} day <i class="ri-add-line"></i> Extra
-                  Price {bookingInfo.seahillingSingleExtraPrice}{" "}
+                  Price {bookingInfo.seahillingSingleExtraPrice * calculateTotalDays() }{" "}
                   <i class="ri-subtract-line"></i>{" "}
-                  {bookingInfo.singleBedDiscountAmount * calculateTotalDays()} discount
+                  {bookingInfo.singleBedDiscountAmount * calculateTotalDays() + bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays()} discount
                 </h5>
                 <span>
                   {bookingInfo.singleBedPrice *
                     bookingInfo.singleBedCount *
                     calculateTotalDays() +
-                    bookingInfo.seahillingSingleExtraPrice -
-                    bookingInfo.singleBedDiscountAmount * calculateTotalDays()}
+                    bookingInfo.seahillingSingleExtraPrice * calculateTotalDays()  -
+                    bookingInfo.singleBedDiscountAmount * calculateTotalDays() - bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays()}
                 </span>
               </>
             )}
@@ -547,16 +573,16 @@ const Booking = () => {
                   {bookingInfo.doubleBedPrice} <i class="ri-close-line"></i>{" "}
                   {bookingInfo.doubleBedCount} bed <i class="ri-close-line"></i>{" "}
                   {calculateTotalDays()} day <i class="ri-add-line"></i> Extra
-                  Price {bookingInfo.seahillingDoubleExtraPrice}{" "}
+                  Price {bookingInfo.seahillingDoubleExtraPrice * calculateTotalDays() }{" "}
                   <i class="ri-subtract-line"></i>{" "}
-                  {bookingInfo.doubleBedDiscountAmount *  calculateTotalDays()} discount
+                  {bookingInfo.doubleBedDiscountAmount *  calculateTotalDays() + bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays() } discount
                 </h5>
                 <span>
                   {bookingInfo.doubleBedPrice *
                     bookingInfo.doubleBedCount *
                     calculateTotalDays()  +
-                    bookingInfo.seahillingDoubleExtraPrice -
-                    bookingInfo.doubleBedDiscountAmount * calculateTotalDays()}
+                    bookingInfo.seahillingDoubleExtraPrice * calculateTotalDays()  -
+                    bookingInfo.doubleBedDiscountAmount * calculateTotalDays() - bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays() }
                 </span>
               </>
             )}
@@ -577,13 +603,13 @@ const Booking = () => {
                 {bookingInfo.singleBedPrice *
                   bookingInfo.singleBedCount *
                   calculateTotalDays() +
-                  bookingInfo.seahillingSingleExtraPrice -
-                  bookingInfo.singleBedDiscountAmount +
+                  bookingInfo.seahillingSingleExtraPrice * calculateTotalDays()  -
+                  bookingInfo.singleBedDiscountAmount * calculateTotalDays() - bookingInfo.singleBedExtraPriceDiscount *  calculateTotalDays() +
                   bookingInfo.doubleBedPrice *
                     bookingInfo.doubleBedCount *
                     calculateTotalDays() +
-                  bookingInfo.seahillingDoubleExtraPrice -
-                  bookingInfo.doubleBedDiscountAmount}
+                  bookingInfo.seahillingDoubleExtraPrice * calculateTotalDays()  -
+                  bookingInfo.doubleBedDiscountAmount * calculateTotalDays() - bookingInfo.doubleBedExtraPriceDiscount *  calculateTotalDays() }
               </span>
             )}
           </ListGroupItem>
