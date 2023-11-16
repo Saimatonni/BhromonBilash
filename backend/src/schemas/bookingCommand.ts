@@ -53,6 +53,7 @@ export abstract class BookingCommand implements ICommand {
     this.booking.hotelCharge = hotelCharge;
     this.booking.totalPrice = hotelCharge + uptripPrice + downtripPrice;
 
+
     if (this.booking.tourGuide) {
       this.booking.totalPrice +=
         this.getTourGuidePrice(
@@ -63,9 +64,8 @@ export abstract class BookingCommand implements ICommand {
     }
 
 
-    await this.updateRoomBookings();
-    console.log("Room update done")
 
+    await this.updateRoomBookings();
     return await this.confirmBooking();
   }
 
@@ -105,7 +105,7 @@ export class BookingCommandThreeStarRooms extends BookingCommand {
         message: "Oppss... downtrip travel id is incorrect.",
       });
     }
-    const downtripPrice = this.booking.uptrip.totalPersons * result.charge;
+    const downtripPrice = this.booking.downtrip.totalPersons * result.charge;
 
     return { uptripPrice, downtripPrice };
   }
