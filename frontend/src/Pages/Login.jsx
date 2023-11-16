@@ -133,8 +133,8 @@ const Login = () => {
         alert("Password reset successful...Login Now")
         console.log("Password reset successful:", data);
         setShowResetPasswordPopup(false);
-        // navigate("/login");
-        navigate(redirectTo);
+        navigate("/login");
+        // navigate(redirectTo);
       } else {
         console.error("Failed to reset password");
         alert("Failed to reset password");
