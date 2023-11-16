@@ -237,12 +237,32 @@ const Bookinginfo = () => {
                                         )
                                       ).toDateString()}
                                     </p>
+
                                     <p>
                                       Total Price: {lowBudgetBooking.totalPrice}
                                       , 3-star hotels, Non-AC Bus
                                     </p>
                                     <div className="updown-trip">
-                                      <h5 className="mb-10">Uptrip</h5>
+                                      <h5 className="mb-10">Uptrip </h5>
+                                      <p>
+                                        Cancellation Date:{" "}
+                                        <span
+                                          style={{
+                                            fontWeight: "bold",
+                                            color: "red",
+                                          }}
+                                        >
+                                          {new Date(
+                                            new Date(
+                                              lowBudgetBooking.uptrip.date
+                                            ).setDate(
+                                              new Date(
+                                                lowBudgetBooking.uptrip.date
+                                              ).getDate() - 7
+                                            )
+                                          ).toDateString()}
+                                        </span>
+                                      </p>
                                       <div>
                                         Source: {lowBudgetBooking.uptrip.source}
                                         , Time: {lowBudgetBooking.uptrip.time},
@@ -260,6 +280,7 @@ const Bookinginfo = () => {
                                         {lowBudgetBooking.uptrip.totalPersons}
                                       </div>
                                     </div>
+
                                     <div className="updown-trip">
                                       <h5>Downtrip</h5>
                                       <div>
@@ -431,6 +452,25 @@ const Bookinginfo = () => {
                                     </p>
                                     <div className="updown-trip">
                                       <h5 className="mb-10">Uptrip</h5>
+                                      <p>
+                                        Cancellation Date:{" "}
+                                        <span
+                                          style={{
+                                            fontWeight: "bold",
+                                            color: "red",
+                                          }}
+                                        >
+                                          {new Date(
+                                            new Date(
+                                              midBudgetBooking.uptrip.date
+                                            ).setDate(
+                                              new Date(
+                                                midBudgetBooking.uptrip.date
+                                              ).getDate() - 7
+                                            )
+                                          ).toDateString()}
+                                        </span>
+                                      </p>
                                       <div>
                                         Source: {midBudgetBooking.uptrip.source}
                                         , Time: {midBudgetBooking.uptrip.time},
@@ -621,6 +661,25 @@ const Bookinginfo = () => {
                                     </p>
                                     <div className="updown-trip">
                                       <h5 className="mb-10">Uptrip</h5>
+                                      <p>
+                                        Cancellation Date:{" "}
+                                        <span
+                                          style={{
+                                            fontWeight: "bold",
+                                            color: "red",
+                                          }}
+                                        >
+                                          {new Date(
+                                            new Date(
+                                              highBudgetBooking.uptrip.date
+                                            ).setDate(
+                                              new Date(
+                                                highBudgetBooking.uptrip.date
+                                              ).getDate() - 7
+                                            )
+                                          ).toDateString()}
+                                        </span>
+                                      </p>
                                       <div>
                                         Source:{" "}
                                         {highBudgetBooking.uptrip.source}, Time:{" "}

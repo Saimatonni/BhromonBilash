@@ -79,6 +79,7 @@ const Header = () => {
   const toggleNotificationPanel = () => {
     if (userData.subscribed) {
       setIsNotificationOpen((prev) => !prev);
+      document.body.style.overflow = "hidden";
     } else {
       alert("Please subscribe first to get notifications.");
     }
@@ -86,7 +87,19 @@ const Header = () => {
 
   const closeNotificationPanel = () => {
     setIsNotificationOpen(false);
+    document.body.style.overflow = "auto";
   };
+
+  // useEffect(() => {
+  //   stickyHeaderFunc();
+  
+  //   return () => {
+  //     window.removeEventListener("scroll", stickyHeaderFunc);
+  //     // Reset the body overflow property when the component is unmounted
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
+  
 
   return (
     <header className="Header" ref={headerRef}>

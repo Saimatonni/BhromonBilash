@@ -14,15 +14,15 @@ const NotificationPanel = ({ notifications, onClose }) => {
         {notifications.length === 0 ? (
           <p>No notifications yet.</p>
         ) : (
-          notifications.map((notification, index) => (
+          notifications.slice().reverse().map((notification, index) => (
             <div key={index} className="notification-item">
-            <div className="notification-content">
-              <p className="notification-date">
-                {new Date(notification.date).toLocaleString()}
-              </p>
-              <p className="notification-message">{notification.message}</p>
+              <div className="notification-content">
+                <p className="notification-date">
+                  {new Date(notification.date).toLocaleString()}
+                </p>
+                <p className="notification-message">{notification.message}</p>
+              </div>
             </div>
-          </div>
           ))
         )}
       </div>
