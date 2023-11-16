@@ -69,6 +69,7 @@ const Bookinginfo = () => {
 
       if (result.success) {
         console.log("Booking deleted successfully");
+        window.location.reload();
         const updatedBookingList = bookingList.filter(
           (booking) => booking.bookingId !== bookingId
         );
@@ -180,7 +181,7 @@ const Bookinginfo = () => {
                   {booking.lowBudgetBookings &&
                     booking.lowBudgetBookings.length > 0 && (
                       <React.Fragment>
-                        <h4>Low Budget Bookings</h4>
+                        <h4>Budget Friendly Bookings</h4>
                         <Row>
                           {booking.lowBudgetBookings
                             .slice()
@@ -368,7 +369,7 @@ const Bookinginfo = () => {
                   {booking.midBudgetBookings &&
                     booking.midBudgetBookings.length > 0 && (
                       <React.Fragment>
-                        <h4>Mid Budget Bookings</h4>
+                        <h4>Standard Bookings</h4>
                         <Row>
                           {booking.midBudgetBookings
                             .slice()
@@ -557,7 +558,7 @@ const Bookinginfo = () => {
                   {booking.highBudgetBookings &&
                     booking.highBudgetBookings.length > 0 && (
                       <React.Fragment>
-                        <h4>High Budget Bookings</h4>
+                        <h4>Luxury Bookings</h4>
                         <Row>
                           {booking.highBudgetBookings
                             .slice()

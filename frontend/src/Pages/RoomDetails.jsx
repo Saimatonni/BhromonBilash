@@ -49,10 +49,13 @@ const RoomDetails = () => {
   useEffect(() => {
     const locationState = location.state;
     if (locationState && locationState.bookingInfo) {
-      setBookingInfo(locationState.bookingInfo);
-      console.log("locaton booking", locationState.bookingInfo);
+      setBookingInfo((prevBookingInfo) => ({
+        ...prevBookingInfo,
+        startBookingDate: locationState.bookingInfo.startBookingDate,
+        endBookingDate: locationState.bookingInfo.endBookingDate,
+      }));
     }
-  }, [location.state, setBookingInfo]);
+  }, [location.state]);
 
   useEffect(() => {
     const pages = Math.ceil(5 / 4);
@@ -333,16 +336,22 @@ const RoomDetails = () => {
     startBookingDate,
   ]);
 
-  console.log("selected room", selectedRooms);
+  // console.log("selected room", selectedRooms);
 
   console.log("booking info", bookingInfo);
 
   const handleStartBookingDateChange = (event) => {
     setStartBookingDate(event.target.value);
+    // const newStartDate = new Date(event.target.value);
+    // newStartDate.setHours(newStartDate.getHours() - 6);
+    // setStartBookingDate(newStartDate.toISOString());
   };
 
   const handleEndBookingDateChange = (event) => {
     setEndBookingDate(event.target.value);
+    // const newEndDate = new Date(event.target.value);
+    // newEndDate.setHours(newEndDate.getHours() - 6);
+    // setEndBookingDate(newEndDate.toISOString());
   };
 
   const isRoomAvailable = (room) => {
@@ -355,8 +364,13 @@ const RoomDetails = () => {
       const endDate = new Date(bookedDate.end);
       const bookingStartDate = new Date(startBookingDate);
       const bookingEndDate = new Date(endBookingDate);
-      bookingStartDate.setDate(bookingStartDate.getDate() + 1);
-      bookingEndDate.setDate(bookingEndDate.getDate() + 1);
+      startDate.setDate(startDate.getDate() - 1);
+      endDate.setDate(endDate.getDate() - 1);
+      // startDate.setHours(bookingStartDate.getHours() + 6);
+      // bookingEndDate.setHours(bookingEndDate.getHours() + 6);
+
+      bookingStartDate.setHours(bookingStartDate.getHours() - 6);
+      bookingEndDate.setHours(bookingEndDate.getHours() - 6);
 
       // console.log("dates...",startDate,endDate,bookingStartDate,bookingEndDate)
 
@@ -373,7 +387,33 @@ const RoomDetails = () => {
     return true;
   };
 
-  // ...
+  // const isRoomAvailable = (room) => {
+  //   if (room.bookedDates.length === 0) {
+  //     return true;
+  //   }
+
+  //   for (const bookedDate of room.bookedDates) {
+  //     const startDate = new Date(bookedDate.start);
+  //     const endDate = new Date(bookedDate.end);
+  //     const bookingStartDate = new Date(startBookingDate);
+  //     const bookingEndDate = new Date(endBookingDate);
+  //     // bookingStartDate.setHours(0, 0, 0, 0); // Set time to midnight
+  //     // bookingEndDate.setHours(0, 0, 0, 0); // Set time to midnight
+
+  //     if (
+  //       (bookingStartDate >= startDate && bookingStartDate <= endDate) ||
+  //       (bookingEndDate >= startDate && bookingEndDate <= endDate) ||
+  //       (startDate >= bookingStartDate && startDate <= bookingEndDate) ||
+  //       (endDate >= bookingStartDate && endDate <= bookingEndDate) ||
+  //       (bookingStartDate.getTime() === endDate.getTime())||
+  //       (bookingStartDate.getTime() === startDate.getTime())
+  //     ) {
+  //       return false;
+  //     }
+  //   }
+
+  //   return true;
+  // };
 
   useEffect(() => {
     const updatedSelectedRooms = selectedRooms.filter((roomId) => {
@@ -447,8 +487,35 @@ const RoomDetails = () => {
               <Col lg="">
                 {RoomsData.map((hotel) => (
                   <>
-                    <div style={{ marginTop: "30px" }}>
+                    {/* <div style={{ marginTop: "30px" }}>
                       <Subtitle Subtitle={hotel.name} />
+                    </div> */}
+                    <div
+                      style={{
+                        marginTop: "30px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Subtitle Subtitle={hotel.name} />
+                      <span style={{ marginLeft: "10px" }}>
+                        <i className="ri-star-s-fill"></i>{" "}
+                        {hotel.rating !== undefined ? (
+                          hotel.rating !== 0 ? (
+                            <span style={{ fontSize: "1.2em", fontWeight: "bold", minWidth: "30px" }}>
+                            {hotel.rating}
+                          </span>
+                          ) : (
+                            <span style={{ fontSize: "1.2em", fontWeight: "bold",  color: "#777" }}>
+                              Not Rated
+                            </span>
+                          )
+                        ) : (
+                          <span style={{ fontSize: "1.2em", fontWeight: "bold",  color: "#777" }}>
+                            Not Rated
+                          </span>
+                        )}
+                      </span>
                     </div>
                     <div
                       style={{
@@ -487,20 +554,21 @@ const RoomDetails = () => {
                       <Row>
                         <Col>
                           {hotel.discount && hotel.discount.length > 0 && (
-                             <div className="discount-section">
-                             <span className="discount-badge2">
-                               Discounts{" "}
-                               {hotel.discount.map((discount, index) => (
-                                 <span
-                                   key={index}
-                                   className="highlighted-discount"
-                                 >
-                                   {discount.amount}% off {discount.to}
-                                   {index !== hotel.discount.length - 1 && ", "}
-                                 </span>
-                               ))}
-                             </span>
-                           </div>
+                            <div className="discount-section">
+                              <span className="discount-badge2">
+                                Discounts{" "}
+                                {hotel.discount.map((discount, index) => (
+                                  <span
+                                    key={index}
+                                    className="highlighted-discount"
+                                  >
+                                    {discount.amount}% off {discount.to}
+                                    {index !== hotel.discount.length - 1 &&
+                                      ", "}
+                                  </span>
+                                ))}
+                              </span>
+                            </div>
                           )}
                         </Col>
                       </Row>
@@ -517,7 +585,7 @@ const RoomDetails = () => {
                                 type="date"
                                 name="startBookingDate"
                                 id="startBookingDate"
-                                value={startBookingDate}
+                                // value={startBookingDate}
                                 onChange={handleStartBookingDateChange}
                                 style={{ width: "350px" }}
                               />
@@ -534,7 +602,7 @@ const RoomDetails = () => {
                                 type="date"
                                 name="endBookingDate"
                                 id="endBookingDate"
-                                value={endBookingDate}
+                                // value={endBookingDate}
                                 onChange={handleEndBookingDateChange}
                                 style={{ width: "350px" }}
                               />

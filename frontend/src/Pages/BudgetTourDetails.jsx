@@ -373,11 +373,21 @@ const BudgetTourDetails = () => {
                               </CardBody> */}
                               <CardBody>
                                 <p>
-                                  <h5 className="hotel-title">{hotel.name}</h5>
+                                  <h5 className="hotel-title">
+                                    {hotel.name}{" "}
+                                    <i className="ri-star-s-fill"></i>{" "}
+                                    {hotel.rating !== 0 ? (
+                                      hotel.rating
+                                    ) : (
+                                      <span className="not-rated">
+                                        Not Rated
+                                      </span>
+                                    )}
+                                  </h5>
                                   {hotel.discount &&
                                     hotel.discount.length > 0 && (
                                       <span className="discount-badge">
-                                        Discounts {" "}
+                                        Discounts{" "}
                                         {hotel.discount.map(
                                           (discount, index) => (
                                             <span key={index}>

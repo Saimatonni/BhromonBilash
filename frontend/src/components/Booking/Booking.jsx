@@ -269,7 +269,8 @@ const Booking = () => {
       }));
       
     }
-  }, [location.state, setBookingInfo]);
+  }, [location.state]);
+
 
   const handleClick = async (e) => {
     // if (!accessToken) {

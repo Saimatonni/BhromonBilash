@@ -27,7 +27,7 @@ import { useApi } from "../context/ApiContext";
 
 const UserProfile = () => {
   const { accessToken, logout } = useAuth();
-  const { userData } = useApi();
+  const { userData, fetchUserProfile } = useApi();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("ChangePassword");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -129,6 +129,7 @@ const UserProfile = () => {
 
       toggleEditProfileModal();
       console.log(response.data);
+      fetchUserProfile();
       navigate("/profile");
     } catch (error) {
       alert("Error editing profile");
@@ -150,6 +151,37 @@ const UserProfile = () => {
   const toggleEditProfileModal = () => {
     setIsEditProfileModalOpen(!isEditProfileModalOpen);
   };
+
+  const handleToggleSubscription = async () => {
+    try {
+      if (userData?.subscribed) {
+        // User is subscribed, make an API request to remove subscription
+        await axios.put("http://localhost:3000/api/subscription/remove", {}, {
+          headers: {
+            "Content-Type": "application/json",
+            accessToken: accessToken,
+          },
+        });
+  
+        console.log("Subscription removed successfully!");
+        fetchUserProfile();
+      } else {
+        await axios.put("http://localhost:3000/api/subscription/request", {}, {
+          headers: {
+            "Content-Type": "application/json",
+            accessToken: accessToken,
+          },
+        });
+  
+        console.log("Subscription requested successfully!");
+        fetchUserProfile();
+      }
+      fetchUserProfile();
+    } catch (error) {
+      console.error("Error toggling subscription:", error.message);
+    }
+  };
+  
 
   return (
     <section>
@@ -182,6 +214,11 @@ const UserProfile = () => {
                 >
                   Edit Profile
                 </Button>
+                <div style={{ marginTop: "20px" }}>
+                  <button className="btn newsletter__btn" onClick={handleToggleSubscription}>
+                    {userData?.subscribed ? "Unsubscribe" : "Subscribe"}
+                  </button>
+                </div>
               </CardBody>
             </Card>
           </Col>
@@ -209,7 +246,7 @@ const UserProfile = () => {
               }`}
               color="primary"
               onClick={() => handleSectionChange("BookingInfo")}
-              style={{ marginRight: "60px" , marginLeft: "10px"}}
+              style={{ marginRight: "60px", marginLeft: "10px" }}
             >
               Booking List
             </Button>

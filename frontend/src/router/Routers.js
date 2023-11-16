@@ -11,6 +11,7 @@ import TourDetailsPage from '../Pages/TourDetailsPage'
 import BudgetTourDetails from '../Pages/BudgetTourDetails'
 import RoomDetails from '../Pages/RoomDetails'
 import UserProfile from '../Pages/UserProfile'
+import About from '../Pages/About'
 
 
 const Routers = () => {
@@ -20,6 +21,7 @@ const Routers = () => {
        <Route path='/home' element={<Home/>}/>
        <Route path='/tours' element={<Tours/>}/>
        <Route path='/profile' element={<UserProfile/>}/>
+       <Route path='/about' element={<About/>}/>
        {/* <Route path='/tours/:id' element={<TourDetails/>}/> */}
        <Route path='/tours/:id' element={<TourDetailsPage/>}/>
        <Route path="/hotels/:id/:budgetType" element={<BudgetTourDetails />} />
