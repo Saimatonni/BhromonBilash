@@ -20,7 +20,6 @@ npm start
 ```
 
 # Features:
-<h4>Dashboard</h4>
 <img src="https://github.com/Saimatonni/BhromonBilash/blob/main/frontend/src/assets/bhromonbilash/home1.png" height="400" />
 <img src="https://github.com/Saimatonni/BhromonBilash/blob/main/frontend/src/assets/bhromonbilash/home2.png" height="400" />
 <img src="https://github.com/Saimatonni/BhromonBilash/blob/main/frontend/src/assets/bhromonbilash/home3.png" height="400" />
